@@ -1,0 +1,54 @@
+$#include "Map/TLMapBlock.h"
+$#include "Map/TLSeamlessMap.h"
+
+// grid state flag ------------------------------------------------------------------------------------
+enum TL_GRID_FLAG
+{
+	TL_GRID_FLAG_PASS				    = 0x00000001,					// 能否通行
+	TL_GRID_FLAG_PLANT				    = 0x00000002,					// 能否种植
+    TL_GRID_FLAG_FILL_WATER             = 0x00000003,                   // 能否取水
+};
+
+class TLMapBlock : public CCNode
+{
+    static TLMapBlock* create( const std::string& strFileName );
+
+    void setIsEnablePassByIndex( int nIndex, bool bIsEnable );
+    bool getIsEnablePassByIndex( int nIndex ) const ;
+    void setIsEnablePass( float x, float y, bool bIsEnable );
+    bool getIsEnablePass( float x, float y );
+
+    void setIsEnablePlantByIndex( int nIndex, bool bIsEnable );
+    bool getIsEnablePlantByIndex( int nIndex ) const;
+    void setIsEnablePlant( float x, float y, bool bIsEnable );
+    bool getIsEnablePlant( float x, float y );
+
+    void setIsEnableFillWaterByIndex( int nIndex, bool bIsEnable );
+    bool getIsEnableFillWaterByIndex( int nIndex ) const;
+    void setIsEnableFillWater( float world_x, float world_y, bool bIsEnable );
+    bool getIsEnableFillWater( float world_x, float world_y );
+};
+
+class TLSeamlessMap : public CCNode
+{
+    static TLSeamlessMap* create( const std::string& strSeamlessMapFile, float x, float y );
+
+    BlockInfo* getBlockInfo( float x, float y );
+	TLMapBlock* getMapBlock( float x, float y );
+
+    void setCurXY( float x, float y );
+
+    void setIsEnablePass( float world_x, float world_y, bool bIsEnable );
+    bool getIsEnablePass( float world_x, float world_y );
+
+    void setIsEnablePlant( float world_x, float world_y, bool bIsEnable );
+    bool getIsEnablePlant( float world_x, float world_y );
+
+    void setIsEnableFillWater( float world_x, float world_y, bool bIsEnable );
+    bool getIsEnableFillWater( float world_x, float world_y );
+
+    int getBlockRow() const;
+    int getBlockCol() const;
+    int getGridWidth() const;
+    int getGridHeight() const;
+};

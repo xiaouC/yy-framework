@@ -1,0 +1,54 @@
+package framework;
+option optimize_for = LITE_RUNTIME;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 一个地图块的数据
+
+// 地表上的物件模型，会盖住地表装饰物，与人物之间可以相互覆盖，基于 y 来决定谁盖住谁
+message ModelInfo {
+    required        string          model_file  = 1;
+    required        float           x           = 2;    // 坐标最主要用于决定 z_order
+    required        float           y           = 3;
+    required        float           offset_x    = 4;    // 
+    required        float           offset_y    = 5;
+    required        float           scale       = 6;
+    required        float           rotation    = 7;
+}
+
+// 地表上的装饰物，会被人物和模型之类的盖住
+message SpriteInfo {
+    required        string          file        = 1;
+    required        float           x           = 2;
+    required        float           y           = 3;
+    required        float           scale       = 4;
+    required        float           rotation    = 5;
+    required        int32           z_order     = 6;
+}
+
+message MapBlock {
+    required        string          name        = 1;            // 名字
+    required        int32           row         = 2;
+    required        int32           col         = 3;
+    required        int32           width       = 4;
+    required        int32           height      = 5;
+    required        string          material    = 6;            // 地表材质
+    repeated        int32           grid_states = 7;            // 地表格子的属性，这是不能改变的属性，动态属性存在玩家身上
+    repeated        SpriteInfo      sprites     = 8;            // 地表装饰物
+    repeated        ModelInfo       models      = 9;            // 地表上的物件模型
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 无缝地图的整体数据
+message BlockInfo {
+    required        string          file        = 1;
+    required        float           x           = 2;
+    required        float           y           = 3;
+}
+
+message SeamlessMap {
+    required        int32           blockRow    = 1;
+    required        int32           blockCol    = 2;
+    required        int32           gridWidth   = 3;
+    required        int32           gridHeight  = 4;
+    repeated        BlockInfo       blocks      = 5;
+}

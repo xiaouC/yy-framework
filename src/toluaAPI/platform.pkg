@@ -1,0 +1,47 @@
+$#include "platform/PlatformUtils.h"
+$#include "platform/SDKCallback.h"
+
+void quitConfirm();
+void quitApplication();
+void hideWindow();
+bool isETC1Supported();
+
+const char* getDeviceId();
+const char* getIMSI();
+const char* getUUID();
+const char* getPlatform();
+const char* getOSVersion();
+const char* getResolution();
+const char* getUA();
+const char* getMetaData(const char*);
+const char* getdeviceUniqueID();
+const char* getMAC();
+const char* getidfa();
+const char* getIMEI();
+
+bool acquireWakeLock();
+bool releaseWakeLock();
+bool userActivity();
+
+int getPackageVersion();
+std::string getPackageName();
+const char* getNetworkTypeName();
+
+void openURL(const char* sUrl);
+
+void useConsole();
+
+void setResourceVersion( const char* szResVersion );
+const char* getResourceVersion();
+
+void playMedia( const char* szPath );
+void stopMedia();
+
+void createLocalNotification( const char* nDaysLater, const char* nHour, const char* nMinute, const char* nSecond, const char* szContent, const char* key, const char* nType );
+void releaseLocalNotification( const char* key = "" );
+void releaseAllLocalNotification();
+
+void register_platform_callback( const char* szCallbackType, LUA_FUNCTION cb);
+
+const char* getAvailMemory();
+const char* GetSdkType();

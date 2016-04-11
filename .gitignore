@@ -1,0 +1,15 @@
+*.o
+*.swp
+.sconsign.dblite
+main
+src/pbc/libpbc.a
+proj.win32/Debug.win32
+proj.win32/Release.win32
+proj.win32/YYFramework.vcxproj.user
+proj.win32/Debug/
+debuglib
+cocos2d-x-2.1.5/cocos2dx/proj.linux/libcocos2dx.a
+proj.android/bin
+proj.android/gen
+proj.android/obj
+proj.android/libs/armeabi
