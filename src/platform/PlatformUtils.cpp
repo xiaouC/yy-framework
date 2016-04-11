@@ -702,19 +702,6 @@ void hideWindow()
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID )
 extern "C"
 {
-JNIEXPORT jboolean JNICALL Java_org_yy_sdk_sendTalkStr(JNIEnv* env, jobject thiz, jstring talkStr)
-{
-    TLEditBox *s_TLEditBox = TLEditBox::getCurrentTLEditBox();
-    s_TLEditBox->sentNetMsgToSelf(env->GetStringUTFChars(talkStr, 0));
-	return true;
-}
-
-JNIEXPORT jboolean JNICALL Java_org_yy_sdk_checkTalkStr(JNIEnv* env, jobject thiz, jstring talkStr, jint talkStrLength)
-{
-    TLEditBox *s_TLEditBox = TLEditBox::getCurrentTLEditBox();
-    return s_TLEditBox->checkText(env->GetStringUTFChars(talkStr, 0), talkStrLength);
-}
-
 JNIEXPORT jboolean JNICALL Java_org_yy_sdk_platformCallback(JNIEnv* env, jobject thiz, jstring type, jstring args)
 {
     platform_callback(env->GetStringUTFChars(type, 0), env->GetStringUTFChars(args, 0));

@@ -40,7 +40,6 @@ public:
 
 public:
     bool checkText( const char * text, int len );
-    void sentNetMsgToSelf( const char * text );
 
     void setText( const char* pszText );
     const char* getText();

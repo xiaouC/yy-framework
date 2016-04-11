@@ -651,16 +651,6 @@ bool TLEditBox::checkText( const char* text, int len )
     return !is_invalid_flag;
 }
 
-
-void TLEditBox::sentNetMsgToSelf( const char * text )
-{
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    framework::AndroidEditTextMessage msgInfo;
-    msgInfo.set_content(text);
-    CNetReceiver::SharedNetReceiver()->SendMsgToSelf(208, &msgInfo);
-#endif
-}
-
 void TLEditBox::deleteBackward()
 {
     int mTempLength = m_strText.length();

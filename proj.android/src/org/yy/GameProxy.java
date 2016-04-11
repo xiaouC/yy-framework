@@ -30,20 +30,43 @@ public class GameProxy {
         return instance;
     }
 
-    public void login(Activity activity,Object customParams) {
-        // 登录，customParams透传给回调
+    // 
+    public final void onLoginFailed() { sdk.platformCallback( "SDK_LOGIN_FAILED", "" ); }
+    public final void onLoginSuccess( String userName, String userID, String token, String channelID ) {
+        try {
+            JSONObject json = new JSONObject();
+            json.put( "username", userName );
+            json.put( "userID", userID );
+            json.put( "token", token );
+            json.put( "channelID", channelID );
+            sdk.platformCallback( "SDK_LOGIN_SUCCESS", json.toString() );
+        } catch ( JSONException e ) {
+            Log.v( "poem", "onloginSuccess, JSONError" );
+        }
+    }
+
+    public final void onLogout() { sdk.platformCallback( "SDK_LOGOUT", "" ); }
+    public final void onPaySuccess() { sdk.platformCallback( "SDK_PAY_SUCCESS", "" ); }
+    public final void onPayFail() { sdk.platformCallback( "SDK_PAY_FAIL", "" ); }
+
+    public boolean supportLogin() { return false; }         // 是否支持sdk登录
+    public boolean supportCommunity() { return false; }     // 是否支持打开社区
+    public boolean supportPay() { return false; }           // 是否支持支付
+    public boolean supportLogout() { return false; }        // 是否支持登出（显示登出按钮）
+
+    public void login(Activity activity,Object customParams) {          // 登录，customParams透传给回调
     }
 
     public void logout(Activity activity,Object customParams) {
         onLogout();
     }
 
-    public void switchAccount(Activity activity,Object customParams) {
-        // 切换帐号（目前没用到），customParams透传给回调
+    public void switchAccount(Activity activity,Object customParams) {  // 切换帐号，customParams透传给回调
     }
 
     public void pay( Activity activity, String ID, String name, String orderID, float price, String callBackInfo, JSONObject roleInfo ) {
-        // 支付 ID：商品ID，name：商品名，orderID：CP订单号，price：金额（单位元），callBackInfo：需要透传给服务器回调，roleInfo：角色信息json，payCallBack：支付回调
+        // 支付 ID：商品ID，name：商品名，orderID：CP订单号，price：金额（单位元），callBackInfo：需要透传给服务器回调，roleInfo：角色信息json
+        // callBackInfo : 'serverID_entityID_orderID'
         /*
          * local roleInfo = {
          *  id = g_player.entityID,
@@ -96,26 +119,6 @@ public class GameProxy {
          */
     }
 
-    public boolean supportLogin() {
-        // 是否支持sdk登录
-        return true;
-    }
-
-    public boolean supportCommunity() {
-        // 是否支持打开社区
-        return true;
-    }
-
-    public boolean supportPay() {
-        // 是否支持支付
-        return true;
-    }
-
-    public boolean supportLogout() {
-        // 是否支持登出（显示登出按钮）
-        return false;
-    }
-
     public void onCreate(Activity activity) {
         // 以下为activity生命周期，有些sdk会要求在里面加入调用。
     }
@@ -151,35 +154,5 @@ public class GameProxy {
     }
 
     public void finish(Activity activity) {
-    }
-
-    // 
-    public void onLoginFailed() {
-        sdk.platformCallback( "SDK_LOGIN_FAILED", "" );
-    }
-
-    public void onLoginSuccess( String userName, String userID, String token, String channelID ) {
-        try {
-            JSONObject json = new JSONObject();
-            json.put( "username", userName );
-            json.put( "userID", userID );
-            json.put( "token", token );
-            json.put( "channelID", channelID );
-            sdk.platformCallback( "SDK_LOGIN_SUCCESS", json.toString() );
-        } catch ( JSONException e ) {
-            Log.v( "poem", "onloginSuccess, JSONError" );
-        }
-    }
-
-    public void onLogout() {
-        sdk.platformCallback( "SDK_LOGOUT", "" );
-    }
-
-    public void onPaySuccess() {
-        sdk.platformCallback( "SDK_PAY_SUCCESS", "" );
-    }
-
-    public void onPayFail() {
-        sdk.platformCallback( "SDK_PAY_FAIL", "" );
     }
 }
