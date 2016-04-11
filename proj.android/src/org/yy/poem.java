@@ -103,6 +103,14 @@ import android.app.NotificationManager;
 import android.app.AlarmManager;
 import android.text.format.Time;
 
+import android.os.Vibrator;
+import android.hardware.Sensor;  
+import android.hardware.SensorEvent;  
+import android.hardware.SensorEventListener;  
+import android.hardware.SensorManager; 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class poem extends Cocos2dxActivity {
     static {
         System.loadLibrary("game");
@@ -111,6 +119,8 @@ public class poem extends Cocos2dxActivity {
     private static String deviceId;
     private static PowerManager.WakeLock wakeLock;
     private static PowerManager powerManager;
+    private SensorManager sensorManager;
+    private Vibrator vibrator;
     private static boolean lockAcquired = false;
 
     private static int versionCode = 0;
@@ -119,6 +129,83 @@ public class poem extends Cocos2dxActivity {
     public static poem app;
 
     private ConnectionChangeReceiver connChangeReceiver;
+
+    // 重力感应监听
+    private static final int SPEED_SHRESHOLD = 2000;            // 速度阈值，当摇晃速度达到这值后产生作用
+    private static final int UPTATE_INTERVAL_TIME = 70;         // 两次检测的时间间隔
+    private boolean bSensorTriggerFlag = false;
+    private float lastSensorChangedX;            // 手机上一个位置时重力感应坐标
+    private float lastSensorChangedY;
+    private float lastSensorChangedZ;
+    private long lastSensorChangedUpdateTime = 0;    // 上次检测时间
+    private boolean bYaoYiYaoListening = false;
+    private SensorEventListener sensorEventListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged( SensorEvent event ) {
+            long now = System.currentTimeMillis();                          // 现在检测时间
+            long timeInterval = now - lastSensorChangedUpdateTime;          // 两次检测的时间间隔
+            if( timeInterval < UPTATE_INTERVAL_TIME )                       // 判断是否达到了检测时间间隔
+                return;
+
+            lastSensorChangedUpdateTime = now;
+
+            // 获得x,y,z的变化值
+            float deltaX = event.values[0] - lastSensorChangedX;
+            float deltaY = event.values[1] - lastSensorChangedY;
+            float deltaZ = event.values[2] - lastSensorChangedZ;
+
+            // 将现在的坐标变成last坐标
+            lastSensorChangedX = event.values[0];
+            lastSensorChangedY = event.values[1];
+            lastSensorChangedZ = event.values[2];
+
+            double speed = Math.sqrt( deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ ) / timeInterval * 10000;
+            if( speed >= SPEED_SHRESHOLD ) {        // 达到速度阀值，发出提示
+                if( !bSensorTriggerFlag ) {
+                    bSensorTriggerFlag = true;
+
+                    sdk.platformCallback( "YAOYIYAO", "" );
+                }
+            } else {
+                bSensorTriggerFlag = false;
+            }
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    private final static int CHECK_EDIT_TEXT = 1;
+    private Dialog edit_dialog = null;
+    private EditText edit_talk = null;
+    private String last_edit_text = "";
+    private Handler handler = new Handler() {
+        public void handleMessage( Message msg ) {
+            switch( msg.what ) {
+                case CHECK_EDIT_TEXT: {
+                    try {
+                        String text = msg.getData().getString( "text" );
+                        int length = text.getBytes( "UTF-8" ).length;
+                        if( sdk.checkTalkStr( text, length ) ) {
+                            last_edit_text = text;
+                            sdk.sendTalkStr( text );
+                        } else {
+                            final String reset_text = last_edit_text;
+                            app.runOnUiThread( new Runnable() {
+                                public void run() {
+                                    if( edit_talk != null ) {
+                                        edit_talk.setText( reset_text );
+                                    }
+                                }
+                            });
+                        }
+                        break;
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        }
+    };
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -143,6 +230,9 @@ public class poem extends Cocos2dxActivity {
         //wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "poem");
         wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "poem");
 
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         deviceId = telephonyManager.getDeviceId();
         if (deviceId==null || deviceId=="")
@@ -161,22 +251,18 @@ public class poem extends Cocos2dxActivity {
     }
 
     public static void quitConfirm(){
-        if (app != null) {
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    GameProxy.getInstance().exit( app );
-                }
-            });
-        }
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                GameProxy.getInstance().exit( app );
+            }
+        });
     }
 
     public static void quitApplication()
     {
-        if (app != null) {
-            app.finish();
-            //GameProxy.getInstance().onDestroy(app);
-            android.os.Process.killProcess(android.os.Process.myPid());
-        }
+        app.finish();
+        //GameProxy.getInstance().onDestroy(app);
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     public void setImmersionMode(){
@@ -214,20 +300,12 @@ public class poem extends Cocos2dxActivity {
     {
         try {
             ApplicationInfo ai = ctx.getPackageManager().getApplicationInfo(ctx.getPackageName(),PackageManager.GET_META_DATA);
-            if (ai.metaData == null) {
+            if( ai.metaData == null ) {
                 return "";
             }
 
-            String result = null;
-            int n = ai.metaData.getInt(name);
-            if (n==0) {
-                result = ai.metaData.getString(name);
-            }
-            else {
-                result = Integer.toString(n);
-            }
-
-            if (result == null) {
+            String result = ai.metaData.getString(name);
+            if( result == null ) {
                 return "";
             }
 
@@ -238,11 +316,6 @@ public class poem extends Cocos2dxActivity {
     }
 
     public static void openURL(String url) {
-        if ( app == null )
-        {
-            return;
-        }
-
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         app.startActivity(i);
@@ -299,74 +372,62 @@ public class poem extends Cocos2dxActivity {
     }
 
     public static void accountLogin(final String arg) {
-        if (app != null) {
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    GameProxy.getInstance().login(app, arg);
-                }
-            });
-        }
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                GameProxy.getInstance().login(app, arg);
+            }
+        });
     }
 
     public static void accountLogout() {
-        if (app != null) {
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    GameProxy.getInstance().logout(app, null);
-                }
-            });
-        }
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                GameProxy.getInstance().logout(app, null);
+            }
+        });
     }
 
     public static void accountSwitch() {
-        if (app != null) {
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    GameProxy.getInstance().switchAccount(app, null);
-                }
-            });
-        }
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                GameProxy.getInstance().switchAccount(app, null);
+            }
+        });
     }
 
     public static void submitExtendData(final String json) {
         Log.v("sdk", json);
-        if (app != null)
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    GameProxy.getInstance().setExtData(app, json);
-                }
-            });
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                GameProxy.getInstance().setExtData(app, json);
+            }
+        });
     }
 
     public static void pay(final String goodID, final String goodName, final String orderID, final float goodPrice, final String callBackInfo, final String roleInfo)
     {
-        if (app != null) {
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    JSONObject b = null;
-                    try {
-                        GameProxy.getInstance().pay(
-                            app,
-                            goodID,                          // 商品名
-                            goodName,                        // 商品名
-                            orderID,
-                            goodPrice,     // 商品价格
-                            callBackInfo,
-                            new JSONObject(roleInfo)
-                        );
-                    } catch(JSONException e) {
-                        Log.e("poem", "roleInfo json parse failed: " + roleInfo);
-                        return;
-                    }
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                JSONObject b = null;
+                try {
+                    GameProxy.getInstance().pay(
+                        app,
+                        goodID,                          // 商品名
+                        goodName,                        // 商品名
+                        orderID,
+                        goodPrice,     // 商品价格
+                        callBackInfo,
+                        new JSONObject(roleInfo)
+                    );
+                } catch(JSONException e) {
+                    Log.e("poem", "roleInfo json parse failed: " + roleInfo);
+                    return;
                 }
-            });
-        }
+            }
+        });
     }
 
     public static void playVideo( String url ) {
-        if( app == null )
-            return;
-
         try {
             Intent i = new Intent( app, VideoActivity.class );
             i.putExtra( "video_path", url );
@@ -504,13 +565,11 @@ public class poem extends Cocos2dxActivity {
     }
 
     public static void enterPlatform() {
-        if (app != null) {
-            app.runOnUiThread(new Runnable() {
-                public void run() {
-                    GameProxy.getInstance().openCommunity(app);
-                }
-            });
-        }
+        app.runOnUiThread(new Runnable() {
+            public void run() {
+                GameProxy.getInstance().openCommunity(app);
+            }
+        });
     }
 
     @Override
@@ -560,14 +619,25 @@ public class poem extends Cocos2dxActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         setImmersionMode();
+
+        if( bYaoYiYaoListening && sensorManager != null ) {
+            sensorManager.registerListener( sensorEventListener, sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER ), SensorManager.SENSOR_DELAY_NORMAL );
+        }
+
         GameProxy.getInstance().onResume(this);
     }
 
     @Override
     protected void onPause() {
+       GameProxy.getInstance().onPause(this);
+ 
+        if( bYaoYiYaoListening && sensorManager != null ) {
+            sensorManager.unregisterListener( app.sensorEventListener );
+        }
+
         super.onPause();
-        GameProxy.getInstance().onPause(this);
     }
 
     @Override
@@ -619,6 +689,127 @@ public class poem extends Cocos2dxActivity {
         // MOBILE
         int nSubType = info.getSubtype();
         return "MOBILE-" + nSubType;
+    }
+
+    public static void closeCustomKeyBoard() {
+        app.runOnUiThread( new Runnable() {
+            public void run() {
+                app.doCloseCustomKeyBoard();
+            }
+        });
+    }
+
+    public static void openCustomKeyBoard( final String talkStr, final String placeHolderStr, final String maxLength, final String inputFlag ) {
+        app.last_edit_text = talkStr;
+        app.runOnUiThread( new Runnable() {
+            public void run() {
+                app.doOpenCustomKeyBoard( talkStr, placeHolderStr, maxLength, inputFlag );
+            }
+        });
+    }
+
+    public void doCloseCustomKeyBoard() {
+        if( edit_dialog != null ) {
+            try {
+                edit_dialog.dismiss();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            edit_dialog = null;
+            edit_talk = null;
+        }
+    }
+
+    public void doOpenCustomKeyBoard( String talkStr, String placeHolderStr, String maxLength, String inputFlag ) {
+    	edit_dialog = new Dialog( this, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen );
+    	edit_dialog.setContentView( R.layout.dialog );
+    	edit_dialog.getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE );
+
+    	edit_dialog.show();
+
+    	edit_dialog.findViewById( R.id.talk_dialog ).setOnTouchListener( new OnTouchListener() {
+			@Override
+			public boolean onTouch( View view, MotionEvent event ) {
+	     		edit_dialog.dismiss();
+                edit_dialog = null;
+                edit_talk = null;
+				return false;
+			}
+    	});
+
+		edit_talk = (EditText)edit_dialog.findViewById( R.id.edit_talk );
+		if( "1".endsWith( inputFlag ) ) {
+			edit_talk.setTransformationMethod( PasswordTransformationMethod.getInstance() );
+		}
+		edit_talk.setText( talkStr );
+		edit_talk.setSelection( edit_talk.getText().length() );
+		edit_talk.addTextChangedListener( new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+				try {
+					String temp = s.toString();
+
+					int temp_utf8_length = temp.getBytes("UTF-8").length;
+
+                    Message msg = new Message();
+                    msg.what = CHECK_EDIT_TEXT;
+                    Bundle b = msg.getData();
+                    b.putString( "text", temp );
+                    handler.sendMessage( msg );
+
+					// if( sdk.checkTalkStr( temp, temp_utf8_length ) ) {
+					// 	String current_talk = edit_talk.getText().toString();
+					// 	sdk.sendTalkStr(current_talk);
+					// 	return;
+					// }
+
+					// s.delete( temp.length() - 1, temp.length() );
+				} catch (Exception e) {
+				}
+			}
+
+			public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+			}
+
+			public void onTextChanged( CharSequence s, int start, int before, int count ) {
+			}
+		});
+		edit_talk.setOnKeyListener( new OnKeyListener() {
+			@Override
+			public boolean onKey( View v, int keyCode, KeyEvent event ) {
+				if (keyCode == KeyEvent.KEYCODE_ENTER){
+		     		edit_dialog.dismiss();
+                    edit_dialog = null;
+                    edit_talk = null;
+
+			    	return true;
+				}
+
+				return false;
+			}
+		});
+    }
+
+    public static void listenYaoYiYao() {
+        app.bYaoYiYaoListening = true;
+
+        if( app.sensorManager != null ) {
+            // 第一个参数是Listener，第二个参数是所得传感器类型，第三个参数值获取传感器信息的频率
+            app.sensorManager.registerListener( app.sensorEventListener, sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER ), SensorManager.SENSOR_DELAY_NORMAL );
+        }
+    }
+
+    public static void unlistenYaoYiYao() {
+        app.bYaoYiYaoListening = false;
+
+        if( app.sensorManager != null ) {
+            app.sensorManager.unregisterListener( app.sensorEventListener );
+        }
+    }
+
+    public static void vibrateOnce() {
+        if( app.vibrator != null ) {
+            app.vibrator.vibrate( 200 );
+        }
     }
 }
 

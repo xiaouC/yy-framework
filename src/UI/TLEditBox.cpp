@@ -141,48 +141,45 @@ bool TLEditBox::attachWithIME()
         CCEGLView* pGlView = CCDirector::sharedDirector()->getOpenGLView();
         if( pGlView )
         {
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+            // 竖屏的时候，才使用下面这个输入法，横屏使用默认的就好
+            //JniMethodInfo t;
+            //if( JniHelper::getStaticMethodInfo( t, "org/yy/poem", "openCustomKeyBoard", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" ) )
+            //{
+            //    s_TLEditBox = this;
 
-            #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-            JniMethodInfo t;
-            if( JniHelper::getStaticMethodInfo( t
-                        , "org/yy/poem"
-                        , "openCustomKeyBoard"
-                        , "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" ) )
+            //    char s_maxLength[64];
+            //    memset(s_maxLength,0,64);
+            //    snprintf(s_maxLength, sizeof(s_maxLength), "%d", m_nMaxLength);
+
+            //    char s_inputFlag[64];
+            //    memset(s_inputFlag,0,64);
+            //    snprintf(s_inputFlag, sizeof(s_inputFlag), "%d", m_eInputFlag);
+
+            //    jstring talkStr = t.env->NewStringUTF( m_strText.c_str() );
+            //    jstring placeHoldStr = t.env->NewStringUTF( m_strPlaceHolder.c_str() );
+            //    jstring maxLengthStr = t.env->NewStringUTF( s_maxLength );
+            //    jstring inputFlagStr = t.env->NewStringUTF( s_inputFlag );
+            //    t.env->CallStaticVoidMethod( t.classID, t.methodID, talkStr,placeHoldStr, maxLengthStr, inputFlagStr );
+            //    t.env->DeleteLocalRef( talkStr );
+            //    t.env->DeleteLocalRef( placeHoldStr );
+            //    t.env->DeleteLocalRef( maxLengthStr );
+            //    t.env->DeleteLocalRef( inputFlagStr );
+            //    t.env->DeleteLocalRef( t.classID );
+            //}
+            pGlView->setIMEKeyboardState( true );
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+            if( m_pEditBoxImpl )
             {
-                char s_maxLength[64];
-                memset(s_maxLength,0,64);
-                snprintf(s_maxLength, sizeof(s_maxLength), "%d", m_nMaxLength);
-
-                char s_inputFlag[64];
-                memset(s_inputFlag,0,64);
-                snprintf(s_inputFlag, sizeof(s_inputFlag), "%d", m_eInputFlag);
-
-                jstring talkStr = t.env->NewStringUTF( m_strText.c_str() );
-                jstring placeHoldStr = t.env->NewStringUTF( m_strPlaceHolder.c_str() );
-                jstring maxLengthStr = t.env->NewStringUTF( s_maxLength );
-                jstring inputFlagStr = t.env->NewStringUTF( s_inputFlag );
-                t.env->CallStaticVoidMethod( t.classID, t.methodID, talkStr,placeHoldStr, maxLengthStr, inputFlagStr );
-                t.env->DeleteLocalRef( talkStr );
-                t.env->DeleteLocalRef( placeHoldStr );
-                t.env->DeleteLocalRef( maxLengthStr );
-                t.env->DeleteLocalRef( inputFlagStr );
-                t.env->DeleteLocalRef( t.classID );
-
                 s_TLEditBox = this;
 
-            }
-
-            #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-            s_TLEditBox = this;
-            if (m_pEditBoxImpl) {
                 m_pEditBoxImpl->setInputFlag(m_eInputFlag);
                 m_pEditBoxImpl->openKeyboard();
                 TLWindowManager::SharedTLWindowManager()->SetEditBoxWindow(m_pInputWindow);
             }
-
-            #else
+#else
             pGlView->setIMEKeyboardState( true );
-            #endif
+#endif
         }
     }
     return bRet;
