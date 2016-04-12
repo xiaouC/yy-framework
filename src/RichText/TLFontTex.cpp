@@ -4,11 +4,11 @@
 #include "MC/MCLoader.h"
 #include "platform/CCPlatformMacros.h"
 
-CCSize g_fontRealSize = CCSizeMake( 20, 24 );
-
 // 统一 18 的大小 
 float TLFontTex::ms_fCommonLineHeight = 24;
 float TLFontTex::ms_fFontOriginSize = 18;
+const int g_tex_width = 1024;
+const int g_text_height = 2048;
 
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 )
     #include <xutility>
@@ -92,13 +92,13 @@ void TLFontTex::initFontTexture( const char* pFile, int nRow, int nCol, const ch
     //////////////////////////////////////////////////////////////////////////////////////////////////
     if (!m_pFontTex) {
         m_pFontTex = new CCTexture2D;
-        int nSize = sizeof(unsigned int) * 1024 * 2048;
-        unsigned int* pTexData = new unsigned int[1024 * 2048];
+        int nSize = sizeof(unsigned int) * g_tex_width * g_text_height;
+        unsigned int* pTexData = new unsigned int[g_tex_width * g_text_height];
         memset( pTexData, 0, nSize );
 
-        m_pFontTex->initWithData( pTexData, kCCTexture2DPixelFormat_Default, 1024, 2048, CCSizeMake(1024, 2048) );
+        m_pFontTex->initWithData( pTexData, kCCTexture2DPixelFormat_Default, g_tex_width, g_text_height, CCSizeMake(g_tex_width, g_text_height) );
 #if CC_ENABLE_CACHE_TEXTURE_DATA
-        VolatileTexture::addDataTexture(m_pFontTex, pTexData, kCCTexture2DPixelFormat_Default, CCSizeMake(1024, 2048));
+        VolatileTexture::addDataTexture(m_pFontTex, pTexData, kCCTexture2DPixelFormat_Default, CCSizeMake(g_tex_width, g_text_height));
 #endif
     }
 
@@ -231,14 +231,17 @@ chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
     UTF8_COMPUTE( p[0], mask, n );
     std::string strTemp( p, n );
 
-    CCLabelTTF* pLabel = CCLabelTTF::create( strTemp.c_str(), ms_strFontName.c_str(), ms_fFontOriginSize );
-    const CCSize& labelSize = pLabel->getContentSize();
+    CCImage image;
+    image.initWithString( strTemp.c_str(), 0, 0, CCImage::kAlignTopLeft, ms_strFontName.c_str(), (int)ms_fFontOriginSize );
 
-    float nNewWidth = labelSize.width + 2;
-    float nNewHeight = labelSize.height + 2;
+    if( image.getWidth() == 0 || image.getHeight() == 0 )
+        return NULL;
+
+    float nNewWidth = image.getWidth() + 2;
+    float nNewHeight = image.getHeight();
 
     // 列满了，下一行 
-    if( m_nOffsetX + nNewWidth > 1024 )
+    if( m_nOffsetX + nNewWidth > g_tex_width )
     {
         m_nOffsetX = 0;
         m_nOffsetY += m_nCurrentLineHeight;
@@ -246,7 +249,57 @@ chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
     }
 
     // 行也满了，换一张贴图 
-    if( m_nOffsetY + nNewHeight > 2048 )
+    if( m_nOffsetY + nNewHeight > g_text_height )
+        return NULL;
+
+    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    glBindTexture( GL_TEXTURE_2D, m_pFontTex->getName() );
+    glTexSubImage2D( GL_TEXTURE_2D, 0, (GLint)m_nOffsetX + 1, (GLint)m_nOffsetY, image.getWidth(), image.getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, image.getData() );
+
+    // 
+    chatTexInfo ctInfo;
+    ctInfo.rcUV = CCRectMake( m_nOffsetX, m_nOffsetY, nNewWidth, nNewHeight );
+
+    // 修正 
+    m_nOffsetX += nNewWidth;
+
+    if( nNewHeight > m_nCurrentLineHeight )
+        m_nCurrentLineHeight = nNewHeight;
+
+    if (m_mapAllChat.find(utf8Char) == m_mapAllChat.end())
+        m_orderAllChat.push_back(strTemp);
+
+    m_mapAllChat[utf8Char] = ctInfo;
+
+    return &m_mapAllChat[utf8Char];
+}
+
+/*
+chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
+{
+    unsigned int utf8Char = cc_utf8_get_char( p );
+
+    int mask,n;
+    UTF8_COMPUTE( p[0], mask, n );
+    std::string strTemp( p, n );
+
+    //CCLabelTTF* pLabel = CCLabelTTF::create( strTemp.c_str(), ms_strFontName.c_str(), ms_fFontOriginSize );
+    CCLabelTTF* pLabel = CCLabelTTF::create( "DD", ms_strFontName.c_str(), ms_fFontOriginSize );
+    const CCSize& labelSize = pLabel->getContentSize();
+
+    float nNewWidth = labelSize.width;
+    float nNewHeight = labelSize.height;
+
+    // 列满了，下一行 
+    if( m_nOffsetX + nNewWidth > g_tex_width )
+    {
+        m_nOffsetX = 0;
+        m_nOffsetY += m_nCurrentLineHeight;
+        m_nCurrentLineHeight = 0;
+    }
+
+    // 行也满了，换一张贴图 
+    if( m_nOffsetY + nNewHeight > g_text_height )
         return NULL;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,7 +336,7 @@ chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
     float fCenterX = m_nOffsetX + nNewWidth * 0.5f;
     float fCenterY = m_nOffsetY + nNewHeight * 0.5f;
 
-    pLabel->setFlipY( true );
+    //pLabel->setFlipY( true );
     pLabel->setColor( ccc3( 255, 255, 255 ) );
     pLabel->setPosition( ccp( fCenterX, fCenterY ) );
     pLabel->visit();
@@ -301,14 +354,14 @@ chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
 
     //m_pFontTex->setAliasTexParameters();
 
-    //saveFontTexture( "font.png" );
+    saveFontTexture( "font.png" );
 
     // 
     chatTexInfo ctInfo;
     ctInfo.rcUV = CCRectMake( m_nOffsetX, m_nOffsetY, nNewWidth, nNewHeight );
 
     // 修正 
-    m_nOffsetX += nNewWidth;
+    m_nOffsetX += ( nNewWidth + 20 );
 
     if( nNewHeight > m_nCurrentLineHeight )
         m_nCurrentLineHeight = nNewHeight;
@@ -320,3 +373,4 @@ chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
 
     return &m_mapAllChat[utf8Char];
 }
+*/
