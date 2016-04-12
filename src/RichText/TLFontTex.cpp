@@ -9,19 +9,17 @@ CCSize g_fontRealSize = CCSizeMake( 20, 24 );
 // 统一 18 的大小 
 float TLFontTex::ms_fCommonLineHeight = 24;
 float TLFontTex::ms_fFontOriginSize = 18;
-//int TLFontTex::ms_nEdgeSize = 0;
-//bool TLFontTex::ms_bStrokeEdge = false;
 
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 )
     #include <xutility>
     #define TL_MAX max
-    std::string TLFontTex::ms_strFontName = "FZPangWa-M18S";
+    std::string TLFontTex::ms_strFontName = "黑体";
 #elif( CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     #define TL_MAX std::max
-    std::string TLFontTex::ms_strFontName = "FZPangWa-M18S";
+    std::string TLFontTex::ms_strFontName = "黑体";
 #elif( CC_TARGET_PLATFORM == CC_PLATFORM_IOS )
     #define TL_MAX std::max
-    std::string TLFontTex::ms_strFontName = "FZPangWa-M18S";
+    std::string TLFontTex::ms_strFontName = "黑体";
 #else
     #define TL_MAX std::max
     std::string TLFontTex::ms_strFontName = "fonts/YunYueFont.ttf";
@@ -33,8 +31,7 @@ void TLFontTex::resetCommonLineHeight()
     CCLabelTTF* pLabel = CCLabelTTF::create( standardWord.c_str(), ms_strFontName.c_str(), ms_fFontOriginSize );
     const CCSize& labelSize = pLabel->getContentSize();
 
-	//ms_fCommonLineHeight = labelSize.height + ms_nEdgeSize * 2;
-    ms_fCommonLineHeight = labelSize.height;
+	ms_fCommonLineHeight = labelSize.height + 2;
 }
 
 TLFontTex* g_pTLFontTex = NULL;
@@ -44,8 +41,8 @@ TLFontTex::TLFontTex()
 , m_uFBO(0)
 , m_pFontTex(NULL)
 , m_nCurrentLineHeight(0)
-//, m_nOffsetX(ms_nEdgeSize)
-//, m_nOffsetY(ms_nEdgeSize)
+, m_nOffsetX(0)
+, m_nOffsetY(0)
 , m_pColorTex(NULL)
 , m_nRow(8)
 , m_nCol(8)
@@ -75,8 +72,8 @@ CCSpriteBatchNode* TLFontTex::newBatchNode()
 void TLFontTex::initFontTexture( const char* pFile, int nRow, int nCol, const char* szShaderName, const char* szFontShaderName )
 {
     glGenFramebuffers( 1, &m_uFBO );
-    //m_nOffsetX = ms_nEdgeSize;
-    //m_nOffsetY = ms_nEdgeSize;
+    m_nOffsetX = 0;
+    m_nOffsetY = 0;
     m_nCurrentLineHeight = 0.0f;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
     if (!m_pColorTex) {
@@ -110,133 +107,17 @@ void TLFontTex::initFontTexture( const char* pFile, int nRow, int nCol, const ch
         {
             std::string strTemp( 1, (char)i );
 
-            createOneChar( strTemp.c_str() );
+            createOneCharEdge( strTemp.c_str() );
         }
     } else {
         std::vector<std::string> vec = m_orderAllChat;
         std::vector<std::string>::iterator it = vec.begin();
         for(; it!=vec.end(); it++) {
             if (!it->empty())
-                createOneChar( it->c_str() );
+                createOneCharEdge( it->c_str() );
         }
     }
 }
-
-chatTexInfo* TLFontTex::createOneChar( const char* p )
-{
-    unsigned int utf8Char = cc_utf8_get_char( p );
-
-    int mask,n;
-    UTF8_COMPUTE( p[0], mask, n );
-    CC_UNUSED_PARAM( mask );
-    std::string strTemp( p, n );
-
-    float width = ( p[0] == ' ' ? ms_fFontOriginSize * 0.5f : 0.0f );
-    float height = ( p[0] == ' ' ? ms_fFontOriginSize * 0.5f : 0.0f );
-
-    CCImage image;
-    image.initWithString( strTemp.c_str(), width, height, CCImage::kAlignTopLeft, ms_strFontName.c_str(), (int)ms_fFontOriginSize );
-
-    if( image.getWidth() == 0 || image.getHeight() == 0 )
-        return NULL;
-
-    float fChatWidth = image.getWidth() + 2.0f;
-
-    //FontImageAddEdge( &image );
-
-    // 列满了，下一行 
-    if( m_nOffsetX + fChatWidth > 1024 )
-    {
-        m_nOffsetX = 0;
-        m_nOffsetY += m_nCurrentLineHeight;
-        m_nCurrentLineHeight = 0;
-    }
-
-    // 行也满了，换一张贴图 
-    if( m_nOffsetY + image.getHeight() > 2048 )
-        return NULL;
-
-    glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-    glBindTexture( GL_TEXTURE_2D, m_pFontTex->getName() );
-    glTexSubImage2D( GL_TEXTURE_2D, 0, (GLint)( m_nOffsetX + 1 ), (GLint)m_nOffsetY, image.getWidth(), image.getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, image.getData() );
-
-    chatTexInfo ctInfo;
-    ctInfo.rcUV = CCRectMake( m_nOffsetX, m_nOffsetY, fChatWidth, image.getHeight() );
-
-    // 修正 
-    m_nOffsetX += fChatWidth;
-
-    if( image.getHeight() > m_nCurrentLineHeight )
-        m_nCurrentLineHeight = image.getHeight();
-
-    if (m_mapAllChat.find(utf8Char) == m_mapAllChat.end())
-        m_orderAllChat.push_back(strTemp);
-
-    m_mapAllChat[utf8Char] = ctInfo;
-
-    return &m_mapAllChat[utf8Char];
-}
-
-//void TLFontTex::FontImageAddEdge( CCImage* pImage )
-//{
-//	if( pImage == NULL )
-//		return;
-//
-//	if( 0 == pImage->getWidth() || 0 == pImage->getHeight() )
-//		return;
-//
-//	//int nWidth = pImage->getWidth()+(ms_nEdgeSize*2);
-//	//int nHeight = pImage->getHeight()+(ms_nEdgeSize*2);
-//	int nWidth = pImage->getWidth();
-//	int nHeight = pImage->getHeight();
-//	int nSize = nHeight * nWidth * 4;
-//
-//	unsigned char* pSrcData = pImage->getData();
-//	unsigned char* pDstData = new unsigned char[nSize];
-//	memset(pDstData, 0, nSize * sizeof(unsigned char));//set all color black, and Alpha is 0
-//
-//	for (int y=0; y<pImage->getHeight(); y++)
-//	{
-//		for (int x=0; x<pImage->getWidth(); x++)
-//		{
-//			unsigned int alpha = pSrcData[(x + y*pImage->getWidth()) * 4];//get Alpha from ARGB
-//			if (0 == alpha)
-//				continue;
-//
-//			unsigned int* pix = (unsigned int*)pDstData + x+ms_nEdgeSize + (y)*nWidth;//up
-//			*pix = (TL_MAX((*pix>>24),alpha))<<24;
-//
-//			pix = (unsigned int*)pDstData + x+ms_nEdgeSize + (y+ms_nEdgeSize*2)*nWidth;//bottom
-//			*pix = (TL_MAX((*pix>>24),alpha))<<24;
-//
-//			pix = (unsigned int*)pDstData + x+ (y+ms_nEdgeSize)*nWidth;//left
-//			*pix = (TL_MAX((*pix>>24),alpha))<<24;
-//
-//			pix = (unsigned int*)pDstData + x+(ms_nEdgeSize*2) + (y+ms_nEdgeSize)*nWidth;//right
-//			*pix = (TL_MAX((*pix>>24),alpha))<<24;
-//		}
-//	}
-//
-//	for (int x=0; x<pImage->getWidth(); x++)
-//	{
-//		for (int y=0; y<pImage->getHeight(); y++)
-//		{	
-//			unsigned int alphaSrc = pSrcData[(x + y*pImage->getWidth()) * 4];//get Alpah from ARGB
-//			if (0 == alphaSrc)
-//				continue;
-//
-//			unsigned int* pix = (unsigned int*)pDstData + x+(ms_nEdgeSize) + (y+ms_nEdgeSize)*nWidth;//body
-//			*pix |= (alphaSrc)|(alphaSrc<<8)|(alphaSrc<<16)|(alphaSrc<<24);
-//		}
-//	}
-//
-//	CC_SAFE_DELETE_ARRAY(pSrcData);
-//
-//	//init with ARGB
-//	pImage->initWithImageData(pDstData, nSize, CCImage::kFmtRawData, nWidth, nHeight);
-//
-//	CC_SAFE_DELETE_ARRAY(pDstData);
-//}
 
 chatTexInfo* TLFontTex::getChatTextInfo( const char* p )
 {
@@ -248,12 +129,11 @@ chatTexInfo* TLFontTex::getChatTextInfo( const char* p )
     if( iter != m_mapAllChat.end() )
         return &iter->second;
 
-    return createOneChar( p );
+    return createOneCharEdge( p );
 }
 
 float TLFontTex::getFontScale( float fInFontSize )
 {
-	//return fInFontSize / ( ms_fFontOriginSize + ms_nEdgeSize * 2 );
 	return fInFontSize / ms_fFontOriginSize;
 }
 
@@ -343,157 +223,100 @@ void TLFontTex::saveFontTexture( const char* szFilePath )
     delete pImage;
 }
 
-//chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
-//{
-//    unsigned int utf8Char = cc_utf8_get_char( p );
-//
-//    int mask,n;
-//    UTF8_COMPUTE( p[0], mask, n );
-//    std::string strTemp( p, n );
-//
-//    CCLabelTTF* pLabel = CCLabelTTF::create( strTemp.c_str(), ms_strFontName.c_str(), ms_fFontOriginSize );
-//    //CCLabelTTF* pLabel = CCLabelTTF::create( strTemp.c_str(), "YunYueFont", ms_fFontOriginSize );
-//    const CCSize& labelSize = pLabel->getContentSize();
-//
-//    //float nNewWidth = labelSize.width + ms_nEdgeSize * 2 + 3;
-//    //float nNewHeight = labelSize.height + ms_nEdgeSize * 2;
-//    float nNewWidth = labelSize.width + ms_nEdgeSize * 2;
-//    float nNewHeight = labelSize.height + ms_nEdgeSize * 2;
-//
-//    // 列满了，下一行 
-//    if( m_nOffsetX + nNewWidth > 1024 )
-//    {
-//        m_nOffsetX = ms_nEdgeSize;
-//        m_nOffsetY += m_nCurrentLineHeight;
-//        m_nCurrentLineHeight = 0;
-//    }
-//
-//    // 行也满了，换一张贴图 
-//    if( m_nOffsetY + nNewHeight > 2048 )
-//        return NULL;
-//
-//    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    // render to texture begin
-//    kmGLMatrixMode( KM_GL_PROJECTION );
-//	kmGLPushMatrix();
-//	kmGLMatrixMode( KM_GL_MODELVIEW );
-//    kmGLPushMatrix();
-//
-//    CCDirector* director = CCDirector::sharedDirector();
-//    director->setProjection( director->getProjection() );
-//
-//    const CCSize& texSize = m_pFontTex->getContentSizeInPixels();
-//
-//    // Calculate the adjustment ratios based on the old and new projections
-//    CCSize size = director->getWinSizeInPixels();
-//    float widthRatio = size.width / texSize.width;
-//    float heightRatio = size.height / texSize.height;
-//
-//    // Adjust the orthographic projection and viewport
-//    glViewport( 0, 0, (GLsizei)texSize.width, (GLsizei)texSize.height );
-//
-//    kmMat4 orthoMatrix;
-//    kmMat4OrthographicProjection( &orthoMatrix, (float)-1.0 / widthRatio,  (float)1.0 / widthRatio,
-//        (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1,1 );
-//    kmGLMultMatrix( &orthoMatrix );
-//
-//    glGetIntegerv( GL_FRAMEBUFFER_BINDING, &m_nOldFBO );
-//    glBindFramebuffer( GL_FRAMEBUFFER, m_uFBO );
-//    
-//    glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pFontTex->getName(), 0 );
-//
-//    // 
-//    float fCenterX = m_nOffsetX + nNewWidth * 0.5f;
-//    float fCenterY = m_nOffsetY + nNewHeight * 0.5f;
-//
-//    pLabel->setFlipY( true );
-//    //if( ms_bStrokeEdge )
-//    //{
-//    //    pLabel->setColor( ccc3( 0, 0, 0 ) );
-//
-//    //    ccBlendFunc originalaBlend = pLabel->getBlendFunc();
-//    //    ccBlendFunc func = { GL_SRC_ALPHA, GL_ONE };
-//    //    pLabel->setBlendFunc( func );
-//    //    pLabel->setAnchorPoint( ccp( 0.5f, 0.5f ) );
-//
-//    //    for( int i=0; i < 360; i += 15 )
-//    //    {
-//    //        float r = CC_DEGREES_TO_RADIANS( i );
-//    //        pLabel->setPosition( ccp( fCenterX + sin( r ) * ms_nEdgeSize, fCenterY + cos( r ) * ms_nEdgeSize ) );
-//    //        pLabel->visit();
-//    //    }
-//
-//    //    pLabel->setBlendFunc( originalaBlend );
-//    //}
-//    pLabel->setColor( ccc3( 255, 255, 255 ) );
-//    pLabel->setPosition( ccp( fCenterX, fCenterY ) );
-//    pLabel->visit();
-//
-//    // render to texture end
-//    glBindFramebuffer( GL_FRAMEBUFFER, m_nOldFBO );
-//
-//    // restore viewport
-//    director->setViewport();
-//
-//    kmGLMatrixMode( KM_GL_PROJECTION );
-//	kmGLPopMatrix();
-//	kmGLMatrixMode( KM_GL_MODELVIEW );v
-//	kmGLPopMatrix();                  {
-//                                       
-//    //m_pFontTex->setAliasTexParameter s();
-//                                      
-//    //saveFontTexture( "font.png" );   
-//                                       
-//    //                                
-//    chatTexInfo ctInfo;                
-//    ctInfo.rcUV = CCRectMake( m_nOffse tX, m_nOffsetY, nNewWidth - 0, nNewHeight );
-//                                       
-//    // 修正                            
-//    m_nOffsetX += nNewWidth + 1;       
-//                                      
-//    if( nNewHeight > m_nCurrentLineHei ght )
-//        m_nCurrentLineHeight = nNewHei ght;
-//                                       
-//    if (m_mapAllChat.find(utf8Char) ==  m_mapAllChat.end())
-//        m_orderAllChat.push_back(strTe mp);
-//                                       
-//    m_mapAllChat[utf8Char] = ctInfo;   
-//                                       
-//    return &m_mapAllChat[utf8Char];    
-//}                                      
-                                       
-                                      
-                                       
-                                       
-                                      
-                                       
-                                       
-                                      
-                                       
-                                       
-                                      
-                                       
-                                       
-                                       
-                                       
-                                      
-                                       
-                                       
-                                       
-                                       
-                                       
-                                       
-                                       
-                                      
-                                       
-                                       
-                                       
-                                       
-                                      
-                                       
-                                      
-                                       
-                                       
-                                      
-                                       
-//}
+chatTexInfo* TLFontTex::createOneCharEdge( const char* p )
+{
+    unsigned int utf8Char = cc_utf8_get_char( p );
+
+    int mask,n;
+    UTF8_COMPUTE( p[0], mask, n );
+    std::string strTemp( p, n );
+
+    CCLabelTTF* pLabel = CCLabelTTF::create( strTemp.c_str(), ms_strFontName.c_str(), ms_fFontOriginSize );
+    const CCSize& labelSize = pLabel->getContentSize();
+
+    float nNewWidth = labelSize.width + 2;
+    float nNewHeight = labelSize.height + 2;
+
+    // 列满了，下一行 
+    if( m_nOffsetX + nNewWidth > 1024 )
+    {
+        m_nOffsetX = 0;
+        m_nOffsetY += m_nCurrentLineHeight;
+        m_nCurrentLineHeight = 0;
+    }
+
+    // 行也满了，换一张贴图 
+    if( m_nOffsetY + nNewHeight > 2048 )
+        return NULL;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // render to texture begin
+    kmGLMatrixMode( KM_GL_PROJECTION );
+	kmGLPushMatrix();
+	kmGLMatrixMode( KM_GL_MODELVIEW );
+    kmGLPushMatrix();
+
+    CCDirector* director = CCDirector::sharedDirector();
+    director->setProjection( director->getProjection() );
+
+    const CCSize& texSize = m_pFontTex->getContentSizeInPixels();
+
+    // Calculate the adjustment ratios based on the old and new projections
+    CCSize size = director->getWinSizeInPixels();
+    float widthRatio = size.width / texSize.width;
+    float heightRatio = size.height / texSize.height;
+
+    // Adjust the orthographic projection and viewport
+    glViewport( 0, 0, (GLsizei)texSize.width, (GLsizei)texSize.height );
+
+    kmMat4 orthoMatrix;
+    kmMat4OrthographicProjection( &orthoMatrix, (float)-1.0 / widthRatio,  (float)1.0 / widthRatio,
+        (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1,1 );
+    kmGLMultMatrix( &orthoMatrix );
+
+    glGetIntegerv( GL_FRAMEBUFFER_BINDING, &m_nOldFBO );
+    glBindFramebuffer( GL_FRAMEBUFFER, m_uFBO );
+    
+    glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_pFontTex->getName(), 0 );
+
+    // 
+    float fCenterX = m_nOffsetX + nNewWidth * 0.5f;
+    float fCenterY = m_nOffsetY + nNewHeight * 0.5f;
+
+    pLabel->setFlipY( true );
+    pLabel->setColor( ccc3( 255, 255, 255 ) );
+    pLabel->setPosition( ccp( fCenterX, fCenterY ) );
+    pLabel->visit();
+
+    // render to texture end
+    glBindFramebuffer( GL_FRAMEBUFFER, m_nOldFBO );
+
+    // restore viewport
+    director->setViewport();
+
+    kmGLMatrixMode( KM_GL_PROJECTION );
+	kmGLPopMatrix();
+	kmGLMatrixMode( KM_GL_MODELVIEW );
+	kmGLPopMatrix();
+
+    //m_pFontTex->setAliasTexParameters();
+
+    //saveFontTexture( "font.png" );
+
+    // 
+    chatTexInfo ctInfo;
+    ctInfo.rcUV = CCRectMake( m_nOffsetX, m_nOffsetY, nNewWidth, nNewHeight );
+
+    // 修正 
+    m_nOffsetX += nNewWidth;
+
+    if( nNewHeight > m_nCurrentLineHeight )
+        m_nCurrentLineHeight = nNewHeight;
+
+    if (m_mapAllChat.find(utf8Char) == m_mapAllChat.end())
+        m_orderAllChat.push_back(strTemp);
+
+    m_mapAllChat[utf8Char] = ctInfo;
+
+    return &m_mapAllChat[utf8Char];
+}

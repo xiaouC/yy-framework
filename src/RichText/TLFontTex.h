@@ -49,10 +49,7 @@ protected:
     std::string m_strFontShaderName;
 
 protected:
-	chatTexInfo* createOneChar( const char* p );
-    //chatTexInfo* createOneCharEdge( const char* p );
-
-	//void FontImageAddEdge( CCImage* pImage );
+    chatTexInfo* createOneCharEdge( const char* p );
 
 public:
 	static float getCommonLineHeight() { return ms_fCommonLineHeight; }
@@ -60,8 +57,6 @@ public:
 
 	static void setFontOriginSize( float fFontOriginSize ) { ms_fFontOriginSize = fFontOriginSize; resetCommonLineHeight(); }
 	static void setFontName( const std::string& strFontName ) { ms_strFontName = strFontName; resetCommonLineHeight(); }
-    //static void setEdgeSize( int nEdgeSize ) { ms_nEdgeSize = nEdgeSize; resetCommonLineHeight(); }
-    //static void setStrokeEdge( bool bStrokeEdge ) { ms_bStrokeEdge = bStrokeEdge; }
 
     static void setParseRichTextHandler( int nParseHandle ) { ms_nParseHandle = nParseHandle; }
 
@@ -69,8 +64,6 @@ protected:
 	static float ms_fCommonLineHeight;
 	static float ms_fFontOriginSize;
 	static std::string ms_strFontName;
-    //static int ms_nEdgeSize;
-    //static bool ms_bStrokeEdge;
 
     static int ms_nParseHandle;
 };
