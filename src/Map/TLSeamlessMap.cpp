@@ -13,7 +13,7 @@ TLSeamlessMap::TLSeamlessMap( const std::string& strSeamlessMapFile, float x, fl
 , m_nGridHeight(0)
 , m_nBlockWidth(0)
 , m_nBlockHeight(0)
-, m_nNextBlockIndex(0)
+, m_nNextBlockIndex(1)
 {
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS )
     m_strSeamlessMapFile = "map/" + strSeamlessMapFile;
@@ -452,7 +452,8 @@ void TLSeamlessMap::addBlock( const std::string& strBlockName, float x, float y,
     std::string strBlockFileName = szBuf;
     ++m_nNextBlockIndex;
 
-    TLMapBlock::newMapBlock( strBlockFileName, strBlockName, m_nBlockRow, m_nBlockCol, m_nGridWidth, m_nGridHeight, strMaterial );
+    if( !TLMapBlock::newMapBlock( strBlockFileName, strBlockName, m_nBlockRow, m_nBlockCol, m_nGridWidth, m_nGridHeight, strMaterial ) )
+        return;
 
     // 在修正前，先记录下来，作为当前的坐标
     m_fCurX = x;
