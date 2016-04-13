@@ -51,7 +51,7 @@ TLSeamlessMap* TLSeamlessMap::create( const std::string& strSeamlessMapFile, flo
 
     unsigned int nPos = strSeamlessMapFile.find_last_of( ".sm" );
     if( nPos != std::string::npos )
-        strTemp = strSeamlessMapFile.substr( 0, nPos - 1 );
+        strTemp = strSeamlessMapFile.substr( 0, nPos - 2 );
 
     TLSeamlessMap * pRet = new TLSeamlessMap( strTemp, x, y );
     if( pRet && pRet->init() )

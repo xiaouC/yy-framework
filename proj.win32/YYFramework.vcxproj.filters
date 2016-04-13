@@ -174,9 +174,6 @@
     <ClCompile Include="..\src\protocol\src\files.pb.cc">
       <Filter>protocol\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\protocol\src\platform.pb.cc">
-      <Filter>protocol\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\RichText\TLFontTex.cpp">
       <Filter>RichText</Filter>
     </ClCompile>
@@ -375,9 +372,6 @@
       <Filter>protocol\src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\protocol\src\files.pb.h">
-      <Filter>protocol\src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\protocol\src\platform.pb.h">
       <Filter>protocol\src</Filter>
     </ClInclude>
     <ClInclude Include="..\src\RichText\TLFontTex.h">
