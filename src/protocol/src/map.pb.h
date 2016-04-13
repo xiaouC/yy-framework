@@ -625,10 +625,17 @@ class SeamlessMap : public ::google::protobuf::MessageLite {
   inline ::google::protobuf::int32 gridheight() const;
   inline void set_gridheight(::google::protobuf::int32 value);
   
-  // repeated .framework.BlockInfo blocks = 5;
+  // required int32 nextBlockIndex = 5;
+  inline bool has_nextblockindex() const;
+  inline void clear_nextblockindex();
+  static const int kNextBlockIndexFieldNumber = 5;
+  inline ::google::protobuf::int32 nextblockindex() const;
+  inline void set_nextblockindex(::google::protobuf::int32 value);
+  
+  // repeated .framework.BlockInfo blocks = 6;
   inline int blocks_size() const;
   inline void clear_blocks();
-  static const int kBlocksFieldNumber = 5;
+  static const int kBlocksFieldNumber = 6;
   inline const ::framework::BlockInfo& blocks(int index) const;
   inline ::framework::BlockInfo* mutable_blocks(int index);
   inline ::framework::BlockInfo* add_blocks();
@@ -647,15 +654,18 @@ class SeamlessMap : public ::google::protobuf::MessageLite {
   inline void clear_has_gridwidth();
   inline void set_has_gridheight();
   inline void clear_has_gridheight();
+  inline void set_has_nextblockindex();
+  inline void clear_has_nextblockindex();
   
   ::google::protobuf::int32 blockrow_;
   ::google::protobuf::int32 blockcol_;
   ::google::protobuf::int32 gridwidth_;
   ::google::protobuf::int32 gridheight_;
   ::google::protobuf::RepeatedPtrField< ::framework::BlockInfo > blocks_;
+  ::google::protobuf::int32 nextblockindex_;
   
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
   
   friend void  protobuf_AddDesc_map_2eproto();
   friend void protobuf_AssignDesc_map_2eproto();
@@ -1514,7 +1524,29 @@ inline void SeamlessMap::set_gridheight(::google::protobuf::int32 value) {
   gridheight_ = value;
 }
 
-// repeated .framework.BlockInfo blocks = 5;
+// required int32 nextBlockIndex = 5;
+inline bool SeamlessMap::has_nextblockindex() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void SeamlessMap::set_has_nextblockindex() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void SeamlessMap::clear_has_nextblockindex() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void SeamlessMap::clear_nextblockindex() {
+  nextblockindex_ = 0;
+  clear_has_nextblockindex();
+}
+inline ::google::protobuf::int32 SeamlessMap::nextblockindex() const {
+  return nextblockindex_;
+}
+inline void SeamlessMap::set_nextblockindex(::google::protobuf::int32 value) {
+  set_has_nextblockindex();
+  nextblockindex_ = value;
+}
+
+// repeated .framework.BlockInfo blocks = 6;
 inline int SeamlessMap::blocks_size() const {
   return blocks_.size();
 }

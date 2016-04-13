@@ -13,6 +13,7 @@ TLSeamlessMap::TLSeamlessMap( const std::string& strSeamlessMapFile, float x, fl
 , m_nGridHeight(0)
 , m_nBlockWidth(0)
 , m_nBlockHeight(0)
+, m_nNextBlockIndex(0)
 {
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS )
     m_strSeamlessMapFile = "map/" + strSeamlessMapFile;
@@ -46,7 +47,13 @@ TLSeamlessMap::~TLSeamlessMap()
 
 TLSeamlessMap* TLSeamlessMap::create( const std::string& strSeamlessMapFile, float x, float y )
 {
-    TLSeamlessMap * pRet = new TLSeamlessMap( strSeamlessMapFile, x, y );
+    std::string strTemp = strSeamlessMapFile;
+
+    unsigned int nPos = strSeamlessMapFile.find_last_of( ".sm" );
+    if( nPos != std::string::npos )
+        strTemp = strSeamlessMapFile.substr( 0, nPos - 1 );
+
+    TLSeamlessMap * pRet = new TLSeamlessMap( strTemp, x, y );
     if( pRet && pRet->init() )
     {
         pRet->autorelease();
@@ -59,10 +66,10 @@ TLSeamlessMap* TLSeamlessMap::create( const std::string& strSeamlessMapFile, flo
 }
 
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
-bool TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial )
+bool TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial )
 {
-    std::string strFirstBlockFileName = strSeamlessMapFile + ".mb";
-    if( !TLMapBlock::newMapBlock( strFirstBlockFileName, nBlockRow, nBlockCol, nGridWidth, nGridHeight, strMaterial ) )
+    std::string strFirstBlockFileName = strSeamlessMapFile + "0";
+    if( !TLMapBlock::newMapBlock( strFirstBlockFileName, strBlockName, nBlockRow, nBlockCol, nGridWidth, nGridHeight, strMaterial ) )
         return false;
 
     std::string strSMFileName = strSeamlessMapFile + ".sm";
@@ -76,6 +83,7 @@ bool TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, int n
     smData.set_blockcol( nBlockCol );
     smData.set_gridwidth( nGridWidth );
     smData.set_gridheight( nGridHeight );
+    smData.set_nextblockindex( 1 );
 
     framework::BlockInfo* bi = smData.add_blocks();
     bi->set_file( strFirstBlockFileName );
@@ -95,7 +103,8 @@ bool TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, int n
 
 bool TLSeamlessMap::save()
 {
-    FILE* fp = fopen( m_strSeamlessMapFile.c_str(), "wb" );
+    std::string strSMFileName = m_strSeamlessMapFile + ".sm";
+    FILE* fp = fopen( strSMFileName.c_str(), "wb" );
     if( fp == NULL )
         return false;
 
@@ -110,6 +119,7 @@ bool TLSeamlessMap::save()
     smData.set_blockcol( m_nBlockCol );
     smData.set_gridwidth( m_nGridWidth );
     smData.set_gridheight( m_nGridHeight );
+    smData.set_nextblockindex( m_nNextBlockIndex );
 
 	std::list<BlockInfo*>::iterator iter = m_listAllBlocks.begin();
 	std::list<BlockInfo*>::iterator iter_end = m_listAllBlocks.end();
@@ -140,8 +150,10 @@ bool TLSeamlessMap::init()
     if( !CCNode::init() )
         return false;
 
+    std::string strSMFileName = m_strSeamlessMapFile + ".sm";
+
     unsigned long iSize = 0;
-	unsigned char* pBuffer = AssetsManager::sharedAssetsManager()->getFileContent( m_strSeamlessMapFile.c_str(), "rb", &iSize );
+	unsigned char* pBuffer = AssetsManager::sharedAssetsManager()->getFileContent( strSMFileName.c_str(), "rb", &iSize );
     if( pBuffer == NULL )
         return false;
 
@@ -154,6 +166,7 @@ bool TLSeamlessMap::init()
     m_nBlockCol = smData.blockcol();
     m_nGridWidth = smData.gridwidth();
     m_nGridHeight = smData.gridheight();
+    m_nNextBlockIndex = smData.nextblockindex();
 
     m_nBlockWidth = m_nBlockCol * m_nGridWidth;
     m_nBlockHeight = m_nBlockRow * m_nGridHeight;
@@ -432,8 +445,15 @@ bool TLSeamlessMap::getIsEnableFillWater( float world_x, float world_y )
     return false;
 }
 
-void TLSeamlessMap::addBlock( const std::string& strBlockName, float x, float y )
+void TLSeamlessMap::addBlock( const std::string& strBlockName, float x, float y, const std::string& strMaterial )
 {
+    char szBuf[1024];
+    sprintf( szBuf, "%s%d", m_strSeamlessMapFile.c_str(), m_nNextBlockIndex );
+    std::string strBlockFileName = szBuf;
+    ++m_nNextBlockIndex;
+
+    TLMapBlock::newMapBlock( strBlockFileName, strBlockName, m_nBlockRow, m_nBlockCol, m_nGridWidth, m_nGridHeight, strMaterial );
+
     // 在修正前，先记录下来，作为当前的坐标
     m_fCurX = x;
     m_fCurY = y;

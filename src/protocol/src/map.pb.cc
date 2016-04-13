@@ -1440,6 +1440,7 @@ const int SeamlessMap::kBlockRowFieldNumber;
 const int SeamlessMap::kBlockColFieldNumber;
 const int SeamlessMap::kGridWidthFieldNumber;
 const int SeamlessMap::kGridHeightFieldNumber;
+const int SeamlessMap::kNextBlockIndexFieldNumber;
 const int SeamlessMap::kBlocksFieldNumber;
 #endif  // !_MSC_VER
 
@@ -1463,6 +1464,7 @@ void SeamlessMap::SharedCtor() {
   blockcol_ = 0;
   gridwidth_ = 0;
   gridheight_ = 0;
+  nextblockindex_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1496,6 +1498,7 @@ void SeamlessMap::Clear() {
     blockcol_ = 0;
     gridwidth_ = 0;
     gridheight_ = 0;
+    nextblockindex_ = 0;
   }
   blocks_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -1566,12 +1569,28 @@ bool SeamlessMap::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(42)) goto parse_blocks;
+        if (input->ExpectTag(40)) goto parse_nextBlockIndex;
         break;
       }
       
-      // repeated .framework.BlockInfo blocks = 5;
+      // required int32 nextBlockIndex = 5;
       case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_nextBlockIndex:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &nextblockindex_)));
+          set_has_nextblockindex();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_blocks;
+        break;
+      }
+      
+      // repeated .framework.BlockInfo blocks = 6;
+      case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_blocks:
@@ -1580,7 +1599,7 @@ bool SeamlessMap::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(42)) goto parse_blocks;
+        if (input->ExpectTag(50)) goto parse_blocks;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -1622,10 +1641,15 @@ void SeamlessMap::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->gridheight(), output);
   }
   
-  // repeated .framework.BlockInfo blocks = 5;
+  // required int32 nextBlockIndex = 5;
+  if (has_nextblockindex()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->nextblockindex(), output);
+  }
+  
+  // repeated .framework.BlockInfo blocks = 6;
   for (int i = 0; i < this->blocks_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
-      5, this->blocks(i), output);
+      6, this->blocks(i), output);
   }
   
 }
@@ -1662,8 +1686,15 @@ int SeamlessMap::ByteSize() const {
           this->gridheight());
     }
     
+    // required int32 nextBlockIndex = 5;
+    if (has_nextblockindex()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->nextblockindex());
+    }
+    
   }
-  // repeated .framework.BlockInfo blocks = 5;
+  // repeated .framework.BlockInfo blocks = 6;
   total_size += 1 * this->blocks_size();
   for (int i = 0; i < this->blocks_size(); i++) {
     total_size +=
@@ -1698,6 +1729,9 @@ void SeamlessMap::MergeFrom(const SeamlessMap& from) {
     if (from.has_gridheight()) {
       set_gridheight(from.gridheight());
     }
+    if (from.has_nextblockindex()) {
+      set_nextblockindex(from.nextblockindex());
+    }
   }
 }
 
@@ -1708,7 +1742,7 @@ void SeamlessMap::CopyFrom(const SeamlessMap& from) {
 }
 
 bool SeamlessMap::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
+  if ((_has_bits_[0] & 0x0000001f) != 0x0000001f) return false;
   
   for (int i = 0; i < blocks_size(); i++) {
     if (!this->blocks(i).IsInitialized()) return false;
@@ -1722,6 +1756,7 @@ void SeamlessMap::Swap(SeamlessMap* other) {
     std::swap(blockcol_, other->blockcol_);
     std::swap(gridwidth_, other->gridwidth_);
     std::swap(gridheight_, other->gridheight_);
+    std::swap(nextblockindex_, other->nextblockindex_);
     blocks_.Swap(&other->blocks_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     std::swap(_cached_size_, other->_cached_size_);
