@@ -424,6 +424,8 @@ void TLLabelRichTex::clearLines()
 
 	m_pBatchNode->removeAllChildrenWithCleanup( true );
 	m_pSpriteNode->removeAllChildrenWithCleanup( true );
+
+    m_setShadowStrokeNodes.clear();
 }
 
 void TLLabelRichTex::setRichString( const char* str, TL_RICH_STRING_FLAG eRichStringFlag )
