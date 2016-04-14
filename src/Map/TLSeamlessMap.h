@@ -37,7 +37,7 @@ public:
     virtual bool init();
 
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
-    static bool newSeamlessMap( const std::string& strSeamlessMapFile, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial );
+    static bool newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial );
 
 	bool save();
 #endif
@@ -81,7 +81,7 @@ protected:
 	std::list<TLMapBlock*> m_listEditMapBlock;
 
 public:
-    void addBlock( const std::string& strBlockName, float x, float y );
+    void addBlock( const std::string& strBlockName, float x, float y, const std::string& strMaterial );
     void removeBlock( float x, float y );
 
 protected:
@@ -93,6 +93,7 @@ protected:
     int m_nBlockRow, m_nBlockCol;               // 每个 block 的行数和列数
     int m_nGridWidth, m_nGridHeight;            // 每一个格子的高宽
     int m_nBlockWidth, m_nBlockHeight;          // 每块的高宽 m_nBlockWidth = m_nBlockCol * m_nGridWidth; m_nBlockHeight = m_nBlockRow * m_nGridHeight
+    int m_nNextBlockIndex;
 
     std::list<BlockInfo*> m_listAllBlocks;
 };

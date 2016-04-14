@@ -14,3 +14,10 @@ proj.android/bin
 proj.android/gen
 proj.android/obj
 proj.android/libs/armeabi
+Debug.win32/
+Release.win32/
+*.sdf
+*.pyc
+*.suo
+*.obj
+releaselib

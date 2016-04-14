@@ -1,7 +1,7 @@
 #pragma once
 #include "cocos2d.h"
 #include "textures/CCTexture2D.h"
-#include "anim.pb.h"
+#include "protocol/src/anim.pb.h"
 #include "../Common/TLCommon.h"
 
 USING_NS_CC;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "files.pb.h"
+#include "protocol/src/files.pb.h"
 #include <string>
 #include <map>
 #include <list>

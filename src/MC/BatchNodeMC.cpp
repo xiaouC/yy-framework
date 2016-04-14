@@ -1,6 +1,6 @@
 #include "BatchNodeMC.h"
 #include "MCLoader.h"
-#include "anim.pb.h"
+#include "protocol/src/anim.pb.h"
 
 //////////////////////////////////////////////////////////////////////////
 MainSceneRoleMC::MainSceneRoleMC( CCSpriteBatchNode* pkBatchNode )

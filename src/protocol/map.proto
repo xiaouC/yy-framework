@@ -46,9 +46,10 @@ message BlockInfo {
 }
 
 message SeamlessMap {
-    required        int32           blockRow    = 1;
-    required        int32           blockCol    = 2;
-    required        int32           gridWidth   = 3;
-    required        int32           gridHeight  = 4;
-    repeated        BlockInfo       blocks      = 5;
+    required        int32           blockRow        = 1;
+    required        int32           blockCol        = 2;
+    required        int32           gridWidth       = 3;
+    required        int32           gridHeight      = 4;
+    required        int32           nextBlockIndex  = 5;
+    repeated        BlockInfo       blocks          = 6;
 }

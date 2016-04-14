@@ -1,6 +1,6 @@
 #pragma once
 #include "cocos2d.h"
-#include "anim.pb.h"
+#include "protocol/src/anim.pb.h"
 
 USING_NS_CC;
 
