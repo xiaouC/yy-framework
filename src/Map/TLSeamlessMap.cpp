@@ -13,7 +13,7 @@ TLSeamlessMap::TLSeamlessMap( const std::string& strSeamlessMapFile, float x, fl
 , m_nGridHeight(0)
 , m_nBlockWidth(0)
 , m_nBlockHeight(0)
-, m_nNextBlockIndex(1)
+, m_nNextBlockIndex(0)
 {
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS )
     m_strSeamlessMapFile = "map/" + strSeamlessMapFile;
@@ -66,29 +66,20 @@ TLSeamlessMap* TLSeamlessMap::create( const std::string& strSeamlessMapFile, flo
 }
 
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
-bool TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial )
+TLSeamlessMap* TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial )
 {
-    std::string strFirstBlockFileName = strSeamlessMapFile + "0";
-    if( !TLMapBlock::newMapBlock( strFirstBlockFileName, strBlockName, nBlockRow, nBlockCol, nGridWidth, nGridHeight, strMaterial ) )
-        return false;
-
     std::string strSMFileName = strSeamlessMapFile + ".sm";
 
     FILE* fp = fopen( strSMFileName.c_str(), "wb" );
     if( fp == NULL )
-        return false;
+        return NULL;
 
     framework::SeamlessMap smData;
     smData.set_blockrow( nBlockRow );
     smData.set_blockcol( nBlockCol );
     smData.set_gridwidth( nGridWidth );
     smData.set_gridheight( nGridHeight );
-    smData.set_nextblockindex( 1 );
-
-    framework::BlockInfo* bi = smData.add_blocks();
-    bi->set_file( strFirstBlockFileName );
-    bi->set_x( 0 );
-    bi->set_y( 0 );
+    smData.set_nextblockindex( 0 );
 
     std::string strBuffer;
     smData.SerializeToString( &strBuffer );
@@ -98,7 +89,15 @@ bool TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, const
     // 
     fclose( fp );
 
-    return true;
+    // 
+    TLSeamlessMap* pkRetSMNode = TLSeamlessMap::create( strSeamlessMapFile, 0.0f, 0.0f );
+    if( pkRetSMNode != NULL )
+    {
+        pkRetSMNode->addBlock( strBlockName, 0.0f, 0.0f, strMaterial );
+        pkRetSMNode->save();
+    }
+
+    return pkRetSMNode;
 }
 
 bool TLSeamlessMap::save()
@@ -502,9 +501,9 @@ void TLSeamlessMap::removeBlock( float x, float y )
 
 void TLSeamlessMap::correctCoordinate( float& x, float& y )
 {
-    int xTempX = ( (int)( x + m_nBlockWidth * 0.5f ) ) / m_nBlockWidth;
+    int xTempX = ( x + m_nBlockWidth * 0.5f ) / m_nBlockWidth;
     x = xTempX * m_nBlockWidth;
 
-    int nTempY = ( (int)( y + m_nBlockHeight * 0.5f ) ) / m_nBlockHeight;
+    int nTempY = ( y + m_nBlockHeight * 0.5f ) / m_nBlockHeight;
     y = nTempY * m_nBlockHeight;
 }
