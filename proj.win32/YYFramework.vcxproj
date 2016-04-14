@@ -116,7 +116,6 @@
     <ClCompile Include="..\src\protocol\src\anim.pb.cc" />
     <ClCompile Include="..\src\protocol\src\files.pb.cc" />
     <ClCompile Include="..\src\protocol\src\map.pb.cc" />
-    <ClCompile Include="..\src\protocol\src\platform.pb.cc" />
     <ClCompile Include="..\src\RichText\TLFontTex.cpp" />
     <ClCompile Include="..\src\RichText\TLLabelRichTex.cpp" />
     <ClCompile Include="..\src\RichText\TLRichTexVerbatim.cpp" />
@@ -186,7 +185,6 @@
     <ClInclude Include="..\src\protocol\src\anim.pb.h" />
     <ClInclude Include="..\src\protocol\src\files.pb.h" />
     <ClInclude Include="..\src\protocol\src\map.pb.h" />
-    <ClInclude Include="..\src\protocol\src\platform.pb.h" />
     <ClInclude Include="..\src\RichText\TLFontTex.h" />
     <ClInclude Include="..\src\RichText\TLLabelRichTex.h" />
     <ClInclude Include="..\src\RichText\TLRichTexVerbatim.h" />
