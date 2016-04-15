@@ -36,11 +36,9 @@ public:
 
     virtual bool init();
 
-#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     static TLSeamlessMap* newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial );
 
 	bool save();
-#endif
 
 public:
     TLMapBlock* loadBlock( const std::string& strFileName );

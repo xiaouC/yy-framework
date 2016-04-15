@@ -65,9 +65,9 @@ TLSeamlessMap* TLSeamlessMap::create( const std::string& strSeamlessMapFile, flo
     return pRet;
 }
 
-#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
 TLSeamlessMap* TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::string strSMFileName = strSeamlessMapFile + ".sm";
 
     FILE* fp = fopen( strSMFileName.c_str(), "wb" );
@@ -98,10 +98,14 @@ TLSeamlessMap* TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapF
     }
 
     return pkRetSMNode;
+#else
+    return NULL;
+#endif
 }
 
 bool TLSeamlessMap::save()
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::string strSMFileName = m_strSeamlessMapFile + ".sm";
     FILE* fp = fopen( strSMFileName.c_str(), "wb" );
     if( fp == NULL )
@@ -141,8 +145,10 @@ bool TLSeamlessMap::save()
     fclose( fp );
 
 	return true;
-}
+#else
+    return false;
 #endif
+}
 
 bool TLSeamlessMap::init()
 {

@@ -55,7 +55,6 @@ protected:
     void updateMaterial( const std::string& strMaterial, int nBlockWidth, int nBlockHeight );
 
     // 下面的是编辑器独有的
-#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
 public:
     static bool newMapBlock( const std::string& strMapBlockFile, const std::string& strBlockName, int nRow, int nCol, int nGridWidth, int nGridHeight, const std::string& strMaterial );
 
@@ -85,6 +84,7 @@ public:
     //bool getIsShowGridLine() const { return m_bShowGridLine; }
 
 protected:
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
 	std::string m_strBlockName;
     std::string m_strMaterial;
 
@@ -111,8 +111,8 @@ protected:
 	CCNode* m_pSelectedNode;
 	CCSize m_kSelMarkSize;
 	CCSprite* m_pSelMarkSprite;
-
 #endif
+
     void recreateGridLine();
     void setIsShowGirdLine( bool bIsShow );
     bool getIsShowGridLine() const { return m_bShowGridLine; }

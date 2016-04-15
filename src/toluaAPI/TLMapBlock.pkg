@@ -27,11 +27,38 @@ class TLMapBlock : public CCNode
     bool getIsEnableFillWaterByIndex( int nIndex ) const;
     void setIsEnableFillWater( float world_x, float world_y, bool bIsEnable );
     bool getIsEnableFillWater( float world_x, float world_y );
+
+    static bool newMapBlock( const std::string& strMapBlockFile, const std::string& strBlockName, int nRow, int nCol, int nGridWidth, int nGridHeight, const std::string& strMaterial );
+
+    void create( int nRow, int nCol, int nWidth, int nHeight );
+    void save();
+
+    void setMaterial( const std::string& strMaterial );
+
+    // sprite
+	CCNode* addSprite( const std::string& strFileName, float x, float y );
+
+    // model
+	CCNode* addModel( const std::string& strFileName, float x, float y );
+
+	void removeObject( CCNode* pkNode );
+	void moveObject( CCNode* pkNode, float mv_x, float mv_y );
+	void scaleObject( CCNode* pkNode, float scale );
+	void rotateObject( CCNode* pkNode, float rotation );
+	void setObjectOffset( CCNode* pkNode, float offset_x, float offset_y );
+
+    CCNode* hitSprite( float x, float y );
+    CCNode* hitModel( float x, float y );
+
+	void setSelectedObject( CCNode* pkSelObj );
 };
 
 class TLSeamlessMap : public CCNode
 {
     static TLSeamlessMap* create( const std::string& strSeamlessMapFile, float x, float y );
+
+    static TLSeamlessMap* newSeamlessMap( const std::string& strSeamlessMapFile, const std::string& strBlockName, int nBlockRow, int nBlockCol, int nGridWidth, int nGridHeight, const std::string& strMaterial );
+	bool save();
 
     BlockInfo* getBlockInfo( float x, float y );
 	TLMapBlock* getMapBlock( float x, float y );

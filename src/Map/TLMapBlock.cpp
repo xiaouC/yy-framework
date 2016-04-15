@@ -61,9 +61,9 @@ TLMapBlock* TLMapBlock::create( const std::string& strFileName )
     return pRet;
 }
 
-#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
 bool TLMapBlock::newMapBlock( const std::string& strMapBlockFile, const std::string& strBlockName, int nRow, int nCol, int nGridWidth, int nGridHeight, const std::string& strMaterial )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     FILE* fp = fopen( strMapBlockFile.c_str(), "wb" );
     if( fp == NULL )
         return false;
@@ -88,8 +88,10 @@ bool TLMapBlock::newMapBlock( const std::string& strMapBlockFile, const std::str
     fclose( fp );
 
     return true;
-}
+#else
+    return false;
 #endif
+}
 
 bool TLMapBlock::init()
 {
@@ -384,9 +386,9 @@ void TLMapBlock::updateMaterial( const std::string& strMaterial, int nBlockWidth
     }
 }
 
-#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
 void TLMapBlock::save()
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     FILE* fp = fopen( m_strMapBlockFile.c_str(), "wb" );
     if( fp != NULL )
     {
@@ -439,15 +441,19 @@ void TLMapBlock::save()
 
         fclose( fp );
     }
+#endif
 }
 
 void TLMapBlock::setMaterial( const std::string& strMaterial )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     updateMaterial( strMaterial, m_nCol * m_nWidth, m_nRow * m_nHeight );
+#endif
 }
 
 CCNode* TLMapBlock::addSprite( const std::string& strFileName, float x, float y )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     CCSprite* pRetSprite = MCLoader::sharedMCLoader()->loadSprite( strFileName.c_str() );
 	if( pRetSprite != NULL )
 	{
@@ -469,10 +475,14 @@ CCNode* TLMapBlock::addSprite( const std::string& strFileName, float x, float y 
 	}
 
 	return pRetSprite;
+#else
+    return NULL;
+#endif
 }
 
 CCNode* TLMapBlock::hitSprite( float x, float y )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     int nZOrder = -9999999;
     CCNode* pRetSprite = NULL;
 
@@ -500,11 +510,15 @@ CCNode* TLMapBlock::hitSprite( float x, float y )
 	setSelectedObject( pRetSprite );
 
     return pRetSprite;
+#else
+    return NULL;
+#endif
 }
 
 // model
 CCNode* TLMapBlock::addModel( const std::string& strFileName, float x, float y )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     TLModel* pkRetModel = TLModel::createWithName( strFileName.c_str() );
 	if( pkRetModel != NULL )
 	{
@@ -527,10 +541,14 @@ CCNode* TLMapBlock::addModel( const std::string& strFileName, float x, float y )
 	}
 
 	return pkRetModel;
+#else
+    return NULL;
+#endif
 }
 
 void TLMapBlock::removeObject( CCNode* pkNode )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::list<ModelInfo*>::iterator iter1 = m_listAllModels.begin();
     std::list<ModelInfo*>::iterator iter1_end = m_listAllModels.end();
     for( ; iter1 != iter1_end; ++iter1 )
@@ -564,10 +582,12 @@ void TLMapBlock::removeObject( CCNode* pkNode )
             return;
         }
     }
+#endif
 }
 
 void TLMapBlock::moveObject( CCNode* pkNode, float mv_x, float mv_y )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::list<ModelInfo*>::iterator iter1 = m_listAllModels.begin();
     std::list<ModelInfo*>::iterator iter1_end = m_listAllModels.end();
     for( ; iter1 != iter1_end; ++iter1 )
@@ -604,10 +624,12 @@ void TLMapBlock::moveObject( CCNode* pkNode, float mv_x, float mv_y )
             return;
         }
     }
+#endif
 }
 
 void TLMapBlock::scaleObject( CCNode* pkNode, float scale )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::list<ModelInfo*>::iterator iter1 = m_listAllModels.begin();
     std::list<ModelInfo*>::iterator iter1_end = m_listAllModels.end();
     for( ; iter1 != iter1_end; ++iter1 )
@@ -635,10 +657,12 @@ void TLMapBlock::scaleObject( CCNode* pkNode, float scale )
             return;
         }
     }
+#endif
 }
 
 void TLMapBlock::rotateObject( CCNode* pkNode, float rotation )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::list<ModelInfo*>::iterator iter1 = m_listAllModels.begin();
     std::list<ModelInfo*>::iterator iter1_end = m_listAllModels.end();
     for( ; iter1 != iter1_end; ++iter1 )
@@ -666,10 +690,12 @@ void TLMapBlock::rotateObject( CCNode* pkNode, float rotation )
             return;
         }
     }
+#endif
 }
 
 void TLMapBlock::setObjectOffset( CCNode* pkNode, float offset_x, float offset_y )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     std::list<ModelInfo*>::iterator iter = m_listAllModels.begin();
     std::list<ModelInfo*>::iterator iter_end = m_listAllModels.end();
     for( ; iter != iter_end; ++iter )
@@ -687,10 +713,12 @@ void TLMapBlock::setObjectOffset( CCNode* pkNode, float offset_x, float offset_y
             return;
         }
     }
+#endif
 }
 
 CCNode* TLMapBlock::hitModel( float x, float y )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     int nZOrder = -9999999;
     CCNode* pkRetModel = NULL;
 
@@ -718,10 +746,14 @@ CCNode* TLMapBlock::hitModel( float x, float y )
 	setSelectedObject( pkRetModel );
 
     return pkRetModel;
+#else
+    return NULL;
+#endif
 }
 
 void TLMapBlock::setSelectedObject( CCNode* pkSelObj )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
 	m_pSelectedNode = pkSelObj;
 	m_pSelMarkSprite->setVisible( m_pSelectedNode ? true : false );
 
@@ -730,10 +762,12 @@ void TLMapBlock::setSelectedObject( CCNode* pkSelObj )
 		m_pSelMarkSprite->setPositionX( m_pSelectedNode->getPositionX() );
 		m_pSelMarkSprite->setPositionY( m_pSelectedNode->getPositionY() );
 	}
+#endif
 }
 
 void TLMapBlock::create( int nRow, int nCol, int nWidth, int nHeight )
 {
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
     // 先清理
     clear();
 
@@ -748,9 +782,9 @@ void TLMapBlock::create( int nRow, int nCol, int nWidth, int nHeight )
 
     // 重新生成网格
     recreateGridLine();
+#endif
 }
 
-#endif
 void TLMapBlock::recreateGridLine()
 {
     float fHalfTotalWidth = m_nCol * m_nWidth * 0.5f;
