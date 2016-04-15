@@ -37,6 +37,7 @@ class TLSeamlessMap : public CCNode
 	TLMapBlock* getMapBlock( float x, float y );
 
     void setCurXY( float x, float y );
+    const std::string& getSeamlessMapFile() const;
 
     void setIsEnablePass( float world_x, float world_y, bool bIsEnable );
     bool getIsEnablePass( float world_x, float world_y );
@@ -51,4 +52,7 @@ class TLSeamlessMap : public CCNode
     int getBlockCol() const;
     int getGridWidth() const;
     int getGridHeight() const;
+
+    void addBlock( const std::string& strBlockName, float x, float y, const std::string& strMaterial );
+    void removeBlock( float x, float y );
 };

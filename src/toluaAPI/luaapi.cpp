@@ -12316,7 +12316,9 @@ static int tolua_api_TLMapBlock_create00(lua_State* tolua_S)
   const std::string strFileName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
   {
    TLMapBlock* tolua_ret = (TLMapBlock*)  TLMapBlock::create(strFileName);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"TLMapBlock");
+    int nID = (tolua_ret) ? (int)tolua_ret->m_uID : -1;
+    int* pLuaID = (tolua_ret) ? &tolua_ret->m_nLuaID : NULL;
+    toluafix_pushusertype_ccobject(tolua_S, nID, pLuaID, (void*)tolua_ret,"TLMapBlock");
    tolua_pushcppstring(tolua_S,(const char*)strFileName);
   }
  }
@@ -12777,7 +12779,9 @@ static int tolua_api_TLSeamlessMap_create00(lua_State* tolua_S)
   float y = ((float)  tolua_tonumber(tolua_S,4,0));
   {
    TLSeamlessMap* tolua_ret = (TLSeamlessMap*)  TLSeamlessMap::create(strSeamlessMapFile,x,y);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"TLSeamlessMap");
+    int nID = (tolua_ret) ? (int)tolua_ret->m_uID : -1;
+    int* pLuaID = (tolua_ret) ? &tolua_ret->m_nLuaID : NULL;
+    toluafix_pushusertype_ccobject(tolua_S, nID, pLuaID, (void*)tolua_ret,"TLSeamlessMap");
    tolua_pushcppstring(tolua_S,(const char*)strSeamlessMapFile);
   }
  }
@@ -12850,7 +12854,9 @@ static int tolua_api_TLSeamlessMap_getMapBlock00(lua_State* tolua_S)
 #endif
   {
    TLMapBlock* tolua_ret = (TLMapBlock*)  self->getMapBlock(x,y);
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"TLMapBlock");
+    int nID = (tolua_ret) ? (int)tolua_ret->m_uID : -1;
+    int* pLuaID = (tolua_ret) ? &tolua_ret->m_nLuaID : NULL;
+    toluafix_pushusertype_ccobject(tolua_S, nID, pLuaID, (void*)tolua_ret,"TLMapBlock");
   }
  }
  return 1;
@@ -12892,6 +12898,38 @@ static int tolua_api_TLSeamlessMap_setCurXY00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'setCurXY'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getSeamlessMapFile of class  TLSeamlessMap */
+#ifndef TOLUA_DISABLE_tolua_api_TLSeamlessMap_getSeamlessMapFile00
+static int tolua_api_TLSeamlessMap_getSeamlessMapFile00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"const TLSeamlessMap",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const TLSeamlessMap* self = (const TLSeamlessMap*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getSeamlessMapFile'", NULL);
+#endif
+  {
+   const std::string tolua_ret = (const std::string)  self->getSeamlessMapFile();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getSeamlessMapFile'.",&tolua_err);
  return 0;
 #endif
 }
@@ -13239,6 +13277,82 @@ static int tolua_api_TLSeamlessMap_getGridHeight00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'getGridHeight'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addBlock of class  TLSeamlessMap */
+#ifndef TOLUA_DISABLE_tolua_api_TLSeamlessMap_addBlock00
+static int tolua_api_TLSeamlessMap_addBlock00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLSeamlessMap",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLSeamlessMap* self = (TLSeamlessMap*)  tolua_tousertype(tolua_S,1,0);
+  const std::string strBlockName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  float x = ((float)  tolua_tonumber(tolua_S,3,0));
+  float y = ((float)  tolua_tonumber(tolua_S,4,0));
+  const std::string strMaterial = ((const std::string)  tolua_tocppstring(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addBlock'", NULL);
+#endif
+  {
+   self->addBlock(strBlockName,x,y,strMaterial);
+   tolua_pushcppstring(tolua_S,(const char*)strBlockName);
+   tolua_pushcppstring(tolua_S,(const char*)strMaterial);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addBlock'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: removeBlock of class  TLSeamlessMap */
+#ifndef TOLUA_DISABLE_tolua_api_TLSeamlessMap_removeBlock00
+static int tolua_api_TLSeamlessMap_removeBlock00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLSeamlessMap",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLSeamlessMap* self = (TLSeamlessMap*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float y = ((float)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeBlock'", NULL);
+#endif
+  {
+   self->removeBlock(x,y);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeBlock'.",&tolua_err);
  return 0;
 #endif
 }
@@ -13869,6 +13983,7 @@ TOLUA_API int tolua_api_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getBlockInfo",tolua_api_TLSeamlessMap_getBlockInfo00);
    tolua_function(tolua_S,"getMapBlock",tolua_api_TLSeamlessMap_getMapBlock00);
    tolua_function(tolua_S,"setCurXY",tolua_api_TLSeamlessMap_setCurXY00);
+   tolua_function(tolua_S,"getSeamlessMapFile",tolua_api_TLSeamlessMap_getSeamlessMapFile00);
    tolua_function(tolua_S,"setIsEnablePass",tolua_api_TLSeamlessMap_setIsEnablePass00);
    tolua_function(tolua_S,"getIsEnablePass",tolua_api_TLSeamlessMap_getIsEnablePass00);
    tolua_function(tolua_S,"setIsEnablePlant",tolua_api_TLSeamlessMap_setIsEnablePlant00);
@@ -13879,6 +13994,8 @@ TOLUA_API int tolua_api_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getBlockCol",tolua_api_TLSeamlessMap_getBlockCol00);
    tolua_function(tolua_S,"getGridWidth",tolua_api_TLSeamlessMap_getGridWidth00);
    tolua_function(tolua_S,"getGridHeight",tolua_api_TLSeamlessMap_getGridHeight00);
+   tolua_function(tolua_S,"addBlock",tolua_api_TLSeamlessMap_addBlock00);
+   tolua_function(tolua_S,"removeBlock",tolua_api_TLSeamlessMap_removeBlock00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

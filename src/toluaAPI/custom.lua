@@ -17,8 +17,9 @@ local CCObjectTypes = {
     "TLWindowManager",
 	"TLModel",
 	"TLTweenTarget",
-	--"TLTweenMgr",
     "TLRenderNode",
+    "TLMapBlock",
+    "TLSeamlessMap",
 }
 
 -- register CCObject types

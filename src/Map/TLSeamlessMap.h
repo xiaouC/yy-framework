@@ -51,6 +51,7 @@ public:
 	TLMapBlock* getMapBlockFromOldBlocks( float x, float y, int& nOldIndex );
 
     void setCurXY( float x, float y );
+    const std::string& getSeamlessMapFile() const { return m_strSeamlessMapFile; }
 
     void setIsEnablePass( float world_x, float world_y, bool bIsEnable );
     bool getIsEnablePass( float world_x, float world_y );
