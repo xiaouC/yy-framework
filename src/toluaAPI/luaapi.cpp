@@ -12757,6 +12757,510 @@ static int tolua_api_TLMapBlock_getIsEnableFillWater00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: newMapBlock of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_newMapBlock00
+static int tolua_api_TLMapBlock_newMapBlock00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,8,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,9,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const std::string strMapBlockFile = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string strBlockName = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  int nRow = ((int)  tolua_tonumber(tolua_S,4,0));
+  int nCol = ((int)  tolua_tonumber(tolua_S,5,0));
+  int nGridWidth = ((int)  tolua_tonumber(tolua_S,6,0));
+  int nGridHeight = ((int)  tolua_tonumber(tolua_S,7,0));
+  const std::string strMaterial = ((const std::string)  tolua_tocppstring(tolua_S,8,0));
+  {
+   bool tolua_ret = (bool)  TLMapBlock::newMapBlock(strMapBlockFile,strBlockName,nRow,nCol,nGridWidth,nGridHeight,strMaterial);
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+   tolua_pushcppstring(tolua_S,(const char*)strMapBlockFile);
+   tolua_pushcppstring(tolua_S,(const char*)strBlockName);
+   tolua_pushcppstring(tolua_S,(const char*)strMaterial);
+  }
+ }
+ return 4;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'newMapBlock'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: create of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_create01
+static int tolua_api_TLMapBlock_create01(lua_State* tolua_S)
+{
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,6,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  int nRow = ((int)  tolua_tonumber(tolua_S,2,0));
+  int nCol = ((int)  tolua_tonumber(tolua_S,3,0));
+  int nWidth = ((int)  tolua_tonumber(tolua_S,4,0));
+  int nHeight = ((int)  tolua_tonumber(tolua_S,5,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'create'", NULL);
+#endif
+  {
+   self->create(nRow,nCol,nWidth,nHeight);
+  }
+ }
+ return 0;
+tolua_lerror:
+ return tolua_api_TLMapBlock_create00(tolua_S);
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: save of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_save00
+static int tolua_api_TLMapBlock_save00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'save'", NULL);
+#endif
+  {
+   self->save();
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'save'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setMaterial of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_setMaterial00
+static int tolua_api_TLMapBlock_setMaterial00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  const std::string strMaterial = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setMaterial'", NULL);
+#endif
+  {
+   self->setMaterial(strMaterial);
+   tolua_pushcppstring(tolua_S,(const char*)strMaterial);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setMaterial'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addSprite of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_addSprite00
+static int tolua_api_TLMapBlock_addSprite00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  const std::string strFileName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  float x = ((float)  tolua_tonumber(tolua_S,3,0));
+  float y = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addSprite'", NULL);
+#endif
+  {
+   CCNode* tolua_ret = (CCNode*)  self->addSprite(strFileName,x,y);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCNode");
+   tolua_pushcppstring(tolua_S,(const char*)strFileName);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addSprite'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: addModel of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_addModel00
+static int tolua_api_TLMapBlock_addModel00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  const std::string strFileName = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  float x = ((float)  tolua_tonumber(tolua_S,3,0));
+  float y = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'addModel'", NULL);
+#endif
+  {
+   CCNode* tolua_ret = (CCNode*)  self->addModel(strFileName,x,y);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCNode");
+   tolua_pushcppstring(tolua_S,(const char*)strFileName);
+  }
+ }
+ return 2;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'addModel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: removeObject of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_removeObject00
+static int tolua_api_TLMapBlock_removeObject00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkNode = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'removeObject'", NULL);
+#endif
+  {
+   self->removeObject(pkNode);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'removeObject'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: moveObject of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_moveObject00
+static int tolua_api_TLMapBlock_moveObject00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkNode = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+  float mv_x = ((float)  tolua_tonumber(tolua_S,3,0));
+  float mv_y = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'moveObject'", NULL);
+#endif
+  {
+   self->moveObject(pkNode,mv_x,mv_y);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'moveObject'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: scaleObject of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_scaleObject00
+static int tolua_api_TLMapBlock_scaleObject00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkNode = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+  float scale = ((float)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'scaleObject'", NULL);
+#endif
+  {
+   self->scaleObject(pkNode,scale);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'scaleObject'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: rotateObject of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_rotateObject00
+static int tolua_api_TLMapBlock_rotateObject00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkNode = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+  float rotation = ((float)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'rotateObject'", NULL);
+#endif
+  {
+   self->rotateObject(pkNode,rotation);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'rotateObject'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setObjectOffset of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_setObjectOffset00
+static int tolua_api_TLMapBlock_setObjectOffset00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkNode = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+  float offset_x = ((float)  tolua_tonumber(tolua_S,3,0));
+  float offset_y = ((float)  tolua_tonumber(tolua_S,4,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setObjectOffset'", NULL);
+#endif
+  {
+   self->setObjectOffset(pkNode,offset_x,offset_y);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setObjectOffset'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hitSprite of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_hitSprite00
+static int tolua_api_TLMapBlock_hitSprite00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float y = ((float)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hitSprite'", NULL);
+#endif
+  {
+   CCNode* tolua_ret = (CCNode*)  self->hitSprite(x,y);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCNode");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hitSprite'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: hitModel of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_hitModel00
+static int tolua_api_TLMapBlock_hitModel00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  float x = ((float)  tolua_tonumber(tolua_S,2,0));
+  float y = ((float)  tolua_tonumber(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'hitModel'", NULL);
+#endif
+  {
+   CCNode* tolua_ret = (CCNode*)  self->hitModel(x,y);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCNode");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'hitModel'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: setSelectedObject of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_setSelectedObject00
+static int tolua_api_TLMapBlock_setSelectedObject00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkSelObj = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setSelectedObject'", NULL);
+#endif
+  {
+   self->setSelectedObject(pkSelObj);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setSelectedObject'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: create of class  TLSeamlessMap */
 #ifndef TOLUA_DISABLE_tolua_api_TLSeamlessMap_create00
 static int tolua_api_TLSeamlessMap_create00(lua_State* tolua_S)
@@ -12789,6 +13293,85 @@ static int tolua_api_TLSeamlessMap_create00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'create'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: newSeamlessMap of class  TLSeamlessMap */
+#ifndef TOLUA_DISABLE_tolua_api_TLSeamlessMap_newSeamlessMap00
+static int tolua_api_TLSeamlessMap_newSeamlessMap00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"TLSeamlessMap",0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,5,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,6,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,7,0,&tolua_err) ||
+     !tolua_iscppstring(tolua_S,8,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,9,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const std::string strSeamlessMapFile = ((const std::string)  tolua_tocppstring(tolua_S,2,0));
+  const std::string strBlockName = ((const std::string)  tolua_tocppstring(tolua_S,3,0));
+  int nBlockRow = ((int)  tolua_tonumber(tolua_S,4,0));
+  int nBlockCol = ((int)  tolua_tonumber(tolua_S,5,0));
+  int nGridWidth = ((int)  tolua_tonumber(tolua_S,6,0));
+  int nGridHeight = ((int)  tolua_tonumber(tolua_S,7,0));
+  const std::string strMaterial = ((const std::string)  tolua_tocppstring(tolua_S,8,0));
+  {
+   TLSeamlessMap* tolua_ret = (TLSeamlessMap*)  TLSeamlessMap::newSeamlessMap(strSeamlessMapFile,strBlockName,nBlockRow,nBlockCol,nGridWidth,nGridHeight,strMaterial);
+    int nID = (tolua_ret) ? (int)tolua_ret->m_uID : -1;
+    int* pLuaID = (tolua_ret) ? &tolua_ret->m_nLuaID : NULL;
+    toluafix_pushusertype_ccobject(tolua_S, nID, pLuaID, (void*)tolua_ret,"TLSeamlessMap");
+   tolua_pushcppstring(tolua_S,(const char*)strSeamlessMapFile);
+   tolua_pushcppstring(tolua_S,(const char*)strBlockName);
+   tolua_pushcppstring(tolua_S,(const char*)strMaterial);
+  }
+ }
+ return 4;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'newSeamlessMap'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: save of class  TLSeamlessMap */
+#ifndef TOLUA_DISABLE_tolua_api_TLSeamlessMap_save00
+static int tolua_api_TLSeamlessMap_save00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLSeamlessMap",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLSeamlessMap* self = (TLSeamlessMap*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'save'", NULL);
+#endif
+  {
+   bool tolua_ret = (bool)  self->save();
+   tolua_pushboolean(tolua_S,(bool)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'save'.",&tolua_err);
  return 0;
 #endif
 }
@@ -13976,10 +14559,26 @@ TOLUA_API int tolua_api_open (lua_State* tolua_S)
    tolua_function(tolua_S,"getIsEnableFillWaterByIndex",tolua_api_TLMapBlock_getIsEnableFillWaterByIndex00);
    tolua_function(tolua_S,"setIsEnableFillWater",tolua_api_TLMapBlock_setIsEnableFillWater00);
    tolua_function(tolua_S,"getIsEnableFillWater",tolua_api_TLMapBlock_getIsEnableFillWater00);
+   tolua_function(tolua_S,"newMapBlock",tolua_api_TLMapBlock_newMapBlock00);
+   tolua_function(tolua_S,"create",tolua_api_TLMapBlock_create01);
+   tolua_function(tolua_S,"save",tolua_api_TLMapBlock_save00);
+   tolua_function(tolua_S,"setMaterial",tolua_api_TLMapBlock_setMaterial00);
+   tolua_function(tolua_S,"addSprite",tolua_api_TLMapBlock_addSprite00);
+   tolua_function(tolua_S,"addModel",tolua_api_TLMapBlock_addModel00);
+   tolua_function(tolua_S,"removeObject",tolua_api_TLMapBlock_removeObject00);
+   tolua_function(tolua_S,"moveObject",tolua_api_TLMapBlock_moveObject00);
+   tolua_function(tolua_S,"scaleObject",tolua_api_TLMapBlock_scaleObject00);
+   tolua_function(tolua_S,"rotateObject",tolua_api_TLMapBlock_rotateObject00);
+   tolua_function(tolua_S,"setObjectOffset",tolua_api_TLMapBlock_setObjectOffset00);
+   tolua_function(tolua_S,"hitSprite",tolua_api_TLMapBlock_hitSprite00);
+   tolua_function(tolua_S,"hitModel",tolua_api_TLMapBlock_hitModel00);
+   tolua_function(tolua_S,"setSelectedObject",tolua_api_TLMapBlock_setSelectedObject00);
   tolua_endmodule(tolua_S);
   tolua_cclass(tolua_S,"TLSeamlessMap","TLSeamlessMap","CCNode",NULL);
   tolua_beginmodule(tolua_S,"TLSeamlessMap");
    tolua_function(tolua_S,"create",tolua_api_TLSeamlessMap_create00);
+   tolua_function(tolua_S,"newSeamlessMap",tolua_api_TLSeamlessMap_newSeamlessMap00);
+   tolua_function(tolua_S,"save",tolua_api_TLSeamlessMap_save00);
    tolua_function(tolua_S,"getBlockInfo",tolua_api_TLSeamlessMap_getBlockInfo00);
    tolua_function(tolua_S,"getMapBlock",tolua_api_TLSeamlessMap_getMapBlock00);
    tolua_function(tolua_S,"setCurXY",tolua_api_TLSeamlessMap_setCurXY00);
