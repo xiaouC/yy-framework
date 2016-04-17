@@ -49,9 +49,20 @@ TLSeamlessMap* TLSeamlessMap::create( const std::string& strSeamlessMapFile, flo
 {
     std::string strTemp = strSeamlessMapFile;
 
-    unsigned int nPos = strSeamlessMapFile.find_last_of( ".sm" );
-    if( nPos != std::string::npos )
-        strTemp = strSeamlessMapFile.substr( 0, nPos - 2 );
+	int nLength = strSeamlessMapFile.length();
+	if( nLength > 3 )
+	{
+		if( strSeamlessMapFile.at( nLength - 1 ) == 'm' &&
+			strSeamlessMapFile.at( nLength - 2 ) == 's' &&
+			strSeamlessMapFile.at( nLength - 3 ) == '.' )
+		{
+			strTemp = strSeamlessMapFile.substr( 0, nLength - 3 );
+		}
+	}
+
+    //unsigned int nPos = strSeamlessMapFile.find_last_of( ".sm" );
+    //if( nPos != std::string::npos )
+    //    strTemp = strSeamlessMapFile.substr( 0, nPos - 2 );
 
     TLSeamlessMap * pRet = new TLSeamlessMap( strTemp, x, y );
     if( pRet && pRet->init() )
@@ -89,7 +100,6 @@ TLSeamlessMap* TLSeamlessMap::newSeamlessMap( const std::string& strSeamlessMapF
     // 
     fclose( fp );
 
-    // 
     TLSeamlessMap* pkRetSMNode = TLSeamlessMap::create( strSeamlessMapFile, 0.0f, 0.0f );
     if( pkRetSMNode != NULL )
     {
@@ -472,7 +482,7 @@ void TLSeamlessMap::addBlock( const std::string& strBlockName, float x, float y,
 
     // 
     BlockInfo* pBlockInfo = new BlockInfo;
-    pBlockInfo->strBlockFileName = strBlockName;
+    pBlockInfo->strBlockFileName = strBlockFileName;
     pBlockInfo->x = x;
     pBlockInfo->y = y;
     m_listAllBlocks.push_back( pBlockInfo );

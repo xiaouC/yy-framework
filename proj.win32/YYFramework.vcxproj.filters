@@ -362,9 +362,6 @@
     <ClInclude Include="..\src\platform\PlatformUtils.h">
       <Filter>platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\platform\sdk.h">
-      <Filter>platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\platform\SDKCallback.h">
       <Filter>platform</Filter>
     </ClInclude>

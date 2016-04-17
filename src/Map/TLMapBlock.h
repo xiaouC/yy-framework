@@ -72,6 +72,7 @@ public:
 	void moveObject( CCNode* pkNode, float mv_x, float mv_y );
 	void scaleObject( CCNode* pkNode, float scale );
 	void rotateObject( CCNode* pkNode, float rotation );
+	CCNode* copyObject( CCNode* pkNode );
 	void setObjectOffset( CCNode* pkNode, float offset_x, float offset_y );
 
     CCNode* hitSprite( float x, float y );

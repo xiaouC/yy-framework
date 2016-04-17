@@ -493,10 +493,10 @@ CCNode* TLMapBlock::hitSprite( float x, float y )
         SpriteInfo* pSpriteInfo = (*iter);
         const CCPoint& position = pSpriteInfo->pSprite->getPosition();
         const CCSize& size = pSpriteInfo->pSprite->getContentSize();
-        if( x >= position.x - size.width * 0.5f &&
-            x <= position.x + size.width * 0.5f &&
-            y >= position.y - size.height * 0.5f &&
-            y <= position.y + size.height * 0.5f )
+		if( x >= position.x - size.width * pSpriteInfo->scale * 0.5f &&
+            x <= position.x + size.width * pSpriteInfo->scale * 0.5f &&
+            y >= position.y - size.height * pSpriteInfo->scale * 0.5f &&
+            y <= position.y + size.height * pSpriteInfo->scale * 0.5f )
         {
             int z_order = pSpriteInfo->pSprite->getZOrder();
             if( z_order > nZOrder )
@@ -693,6 +693,68 @@ void TLMapBlock::rotateObject( CCNode* pkNode, float rotation )
 #endif
 }
 
+CCNode* TLMapBlock::copyObject( CCNode* pkNode )
+{
+#if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
+	ModelInfo* pkCopyModelInfo = NULL;
+
+	std::list<ModelInfo*>::iterator iter1 = m_listAllModels.begin();
+    std::list<ModelInfo*>::iterator iter1_end = m_listAllModels.end();
+    for( ; iter1 != iter1_end; ++iter1 )
+    {
+        ModelInfo* pkModelInfo = (*iter1);
+        if( pkModelInfo->pkModelNode == pkNode )
+        {
+			pkCopyModelInfo = pkModelInfo;
+
+            break;
+        }
+    }
+
+	if( pkCopyModelInfo != NULL )
+	{
+		CCNode* pkCopyNode = addModel( pkCopyModelInfo->strFileName, pkCopyModelInfo->x, pkCopyModelInfo->y );
+
+		scaleObject( pkCopyNode, pkCopyModelInfo->scale );
+		rotateObject( pkCopyNode, pkCopyModelInfo->rotation );
+		setObjectOffset( pkCopyNode, pkCopyModelInfo->offset_x, pkCopyModelInfo->offset_y );
+
+		setSelectedObject( pkCopyNode );
+
+		return pkCopyNode;
+	}
+
+	// 
+	SpriteInfo* pkCopySpriteInfo = NULL;
+	std::list<SpriteInfo*>::iterator iter2 = m_listAllSprites.begin();
+    std::list<SpriteInfo*>::iterator iter2_end = m_listAllSprites.end();
+    for( ; iter2 != iter2_end; ++iter2 )
+    {
+        SpriteInfo* pSpriteInfo = (*iter2);
+        if( pSpriteInfo->pSprite == pkNode )
+        {
+			pkCopySpriteInfo = pSpriteInfo;
+
+            break;
+        }
+    }
+
+	if( pkCopySpriteInfo != NULL )
+	{
+		CCNode* pkCopyNode = addSprite( pkCopySpriteInfo->strFileName, pkCopySpriteInfo->x, pkCopySpriteInfo->y );
+
+		scaleObject( pkCopyNode, pkCopySpriteInfo->scale );
+		rotateObject( pkCopyNode, pkCopySpriteInfo->rotation );
+		
+		setSelectedObject( pkCopyNode );
+
+		return pkCopyNode;
+	}
+#endif
+
+	return NULL;
+}
+
 void TLMapBlock::setObjectOffset( CCNode* pkNode, float offset_x, float offset_y )
 {
 #if( CC_TARGET_PLATFORM == CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_LINUX )
@@ -729,10 +791,10 @@ CCNode* TLMapBlock::hitModel( float x, float y )
         ModelInfo* pkModelInfo = (*iter);
         const CCPoint& position = pkModelInfo->pkModelNode->getPosition();
         const CCSize& size = ((TLModel*)pkModelInfo->pkModelNode)->mcBoundingBox.size;
-        if( x >= position.x + pkModelInfo->offset_x - size.width * 0.5f &&
-            x <= position.x + pkModelInfo->offset_x + size.width * 0.5f &&
-            y >= position.y + pkModelInfo->offset_y - size.height * 0.5f &&
-            y <= position.y + pkModelInfo->offset_y + size.height * 0.5f )
+		if( x >= position.x + pkModelInfo->offset_x - size.width * pkModelInfo->scale * 0.5f &&
+            x <= position.x + pkModelInfo->offset_x + size.width * pkModelInfo->scale * 0.5f &&
+            y >= position.y + pkModelInfo->offset_y - size.height * pkModelInfo->scale * 0.5f &&
+            y <= position.y + pkModelInfo->offset_y + size.height * pkModelInfo->scale * 0.5f )
         {
             int z_order = pkModelInfo->pkModelNode->getZOrder();
             if( z_order > nZOrder )

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: api
-** Generated automatically by tolua++-version on [The timestamp has been removed by xiaou].
+** Generated automatically by tolua++-version on 04/17/[The timestamp has been removed by xiaou].
 */
 
 /****************************************************************************
@@ -13119,6 +13119,40 @@ static int tolua_api_TLMapBlock_rotateObject00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: copyObject of class  TLMapBlock */
+#ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_copyObject00
+static int tolua_api_TLMapBlock_copyObject00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"TLMapBlock",0,&tolua_err) ||
+     !tolua_isusertype(tolua_S,2,"CCNode",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  TLMapBlock* self = (TLMapBlock*)  tolua_tousertype(tolua_S,1,0);
+  CCNode* pkNode = ((CCNode*)  tolua_tousertype(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'copyObject'", NULL);
+#endif
+  {
+   CCNode* tolua_ret = (CCNode*)  self->copyObject(pkNode);
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"CCNode");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'copyObject'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: setObjectOffset of class  TLMapBlock */
 #ifndef TOLUA_DISABLE_tolua_api_TLMapBlock_setObjectOffset00
 static int tolua_api_TLMapBlock_setObjectOffset00(lua_State* tolua_S)
@@ -14569,6 +14603,7 @@ TOLUA_API int tolua_api_open (lua_State* tolua_S)
    tolua_function(tolua_S,"moveObject",tolua_api_TLMapBlock_moveObject00);
    tolua_function(tolua_S,"scaleObject",tolua_api_TLMapBlock_scaleObject00);
    tolua_function(tolua_S,"rotateObject",tolua_api_TLMapBlock_rotateObject00);
+   tolua_function(tolua_S,"copyObject",tolua_api_TLMapBlock_copyObject00);
    tolua_function(tolua_S,"setObjectOffset",tolua_api_TLMapBlock_setObjectOffset00);
    tolua_function(tolua_S,"hitSprite",tolua_api_TLMapBlock_hitSprite00);
    tolua_function(tolua_S,"hitModel",tolua_api_TLMapBlock_hitModel00);

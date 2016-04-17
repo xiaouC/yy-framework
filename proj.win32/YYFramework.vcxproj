@@ -179,7 +179,6 @@
     <ClInclude Include="..\src\particle\util\UTF8.h" />
     <ClInclude Include="..\src\particle\ValueList.h" />
     <ClInclude Include="..\src\platform\PlatformUtils.h" />
-    <ClInclude Include="..\src\platform\sdk.h" />
     <ClInclude Include="..\src\platform\SDKCallback.h" />
     <ClInclude Include="..\src\platform\SDKLoginUtilsForAndroid.h" />
     <ClInclude Include="..\src\protocol\src\anim.pb.h" />
